@@ -1,0 +1,6 @@
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LougisSP.BO\bin\Debug\LougisSP.BO.dll
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LougisSP.BO\bin\Debug\LougisSP.BO.pdb
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LougisSP.BO\obj\Debug\LougisSP.BO.csproj.AssemblyReference.cache
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LougisSP.BO\obj\Debug\LougisSP.BO.csproj.CoreCompileInputs.cache
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LougisSP.BO\obj\Debug\LougisSP.BO.dll
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LougisSP.BO\obj\Debug\LougisSP.BO.pdb

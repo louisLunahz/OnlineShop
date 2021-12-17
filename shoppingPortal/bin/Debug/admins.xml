@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Store>
+  <Admin Id="1">
+      <FirstName>Jose</FirstName>
+      <LastName>Luna</LastName>
+      <PhoneNumber>2221989689</PhoneNumber>
+      <Email>louislunahz@gmail.com</Email>
+      <Pass>C9b2a317e8.</Pass>
+       <DateOfRegistration>2021-12-12</DateOfRegistration>
+      <DateOfBirth>1996-08-19</DateOfBirth>
+  </Admin>
+ <Admin  Id="2">
+      <FirstName>Carlos</FirstName>
+      <LastName>Lopez</LastName>
+      <PhoneNumber>2211207149</PhoneNumber>
+      <Email>carloslopez@gmail.com</Email>
+      <Pass>C9b2a317e8.</Pass>
+       <DateOfRegistration>2000-12-10</DateOfRegistration>
+      <DateOfBirth>1996-07-19</DateOfBirth>
+  </Admin>
+ <Admin  Id="3">
+      <FirstName>Irene</FirstName>
+      <LastName>Luna</LastName>
+      <PhoneNumber>2226227142</PhoneNumber>
+      <Email>ireneluna@gmail.com</Email>
+      <Pass>passU123123</Pass>
+       <DateOfRegistration>2000-07-09</DateOfRegistration>
+      <DateOfBirth>2020-04-31</DateOfBirth>
+  </Admin>
+</Store>
