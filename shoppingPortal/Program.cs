@@ -15,28 +15,19 @@ namespace shoppingPortal
     {
         static void Main(string[] args)
         {
+            //getting the data from the csv files
             bool passCorrect;
             var cr = new CsvReader<Customer>();
             var cr2 = new CsvReader<Admin>();
             var cr3 = new CsvReader<Employee>();
             var cr4 = new CsvReader<Product>();
-            
-            var products = cr4.Read("products.csv", false).ToList();
             var customers = cr.Read("customers.csv", false).ToList();
+            var products = cr4.Read("products.csv", false).ToList();
             var admins = cr2.Read("admins.csv", false).ToList();
             var employees = cr3.Read("employees.csv", false).ToList();
             List<Person> persons = customers.Concat<Person>(employees).Concat<Person>(admins).ToList();
-           
-
-            foreach (Product p in products) {
-                Console.WriteLine("product name: "+p.Name);
-            }
-            foreach (Customer c in customers) {
-                Console.WriteLine("customer name: "+c.FirstName);
-            }
             bool validOption;
             int option;
-
             do
             {
                 Console.WriteLine("++++++++++++++++++++++++++++++++++++++++");
@@ -77,91 +68,72 @@ namespace shoppingPortal
                             Console.WriteLine("Welcome customer: "+ person.FirstName+"  "+person.LastName);
                             int optionProducts;
                             bool valid;
-                            products = new List<Product>();
+                            do
+                            {
 
-                            //do
-                            //{
+                                Console.Clear();
+                                Console.WriteLine("1.-Show all products");
+                                Console.WriteLine("2.---------------------");
+                                Console.WriteLine("3.---------------------");
+                                Console.WriteLine("4.-exit");
+                                valid = int.TryParse(Console.ReadLine(), out optionProducts);
 
-                            //    Console.Clear();
-                            //    Console.WriteLine("1.-Show all products");
-                            //    Console.WriteLine("2.-Show only Mechanical Keyboards");
-                            //    Console.WriteLine("3.-Show only membrane keyboards");
-                            //    Console.WriteLine("4.-exit");
-                            //    valid = int.TryParse(Console.ReadLine(), out optionProducts);
+                                switch (optionProducts)
+                                {
+                                    case 1:
+                                        Console.Clear();
+                                        ShowProducts(products);
+                                        string idKeyboard;
+                                        Product product;
 
-                            //    switch (optionProducts)
-                            //    {
-                            //        case 1:
-                            //            Console.Clear();
-                            //            ShowProducts(products);
-                            //            string idKeyboard;
-                            //            Keyboard keyboard;
+                                        do
+                                        {
+                                            Console.WriteLine(" Enter the id of the product to see full details or r to return ");
+                                            idKeyboard = Console.ReadLine();
+                                            if (idKeyboard == "r")
+                                            {
+                                                Console.WriteLine("leaving...");
+                                                Console.ReadKey();
+                                                break;
+                                            }
 
-                            //            do
-                            //            {
+                                            product = Searcher.GetProductFromList(products, idKeyboard);
 
-
-                            //                Console.WriteLine(" Enter the id of the product to see full details or r to return ");
-                            //                idKeyboard = Console.ReadLine();
-                            //                if (idKeyboard == "r")
-                            //                {
-                            //                    Console.WriteLine("leaving...");
-                            //                    Console.ReadKey();
-                            //                    break;
-                            //                }
-
-                            //                keyboard = Searcher.GetProductFromList(products, idKeyboard);
-
-                            //                if (keyboard is null)
-                            //                {
-                            //                    Console.WriteLine("not found");
-                            //                    Console.ReadKey();
-                            //                }
-                            //                else
-                            //                {
-                            //                    keyboard.PrintAllDetails();
-                            //                    Console.ReadKey();
-                            //                }
-                            //            } while (idKeyboard == "" || idKeyboard is null);
+                                            if (product is null)
+                                            {
+                                                Console.WriteLine("not found");
+                                                Console.ReadKey();
+                                            }
+                                            else
+                                            {
+                                                product.PrintAllDetails();
+                                                Console.ReadKey();
+                                            }
+                                        } while (idKeyboard == "" || idKeyboard is null);
 
 
 
 
-                            //            break;
+                                        break;
 
-                            //        case 2:
-                            //            Console.Clear();
-                            //            ShowProducts(products, new MechanicalKeyboard());
-                            //            Console.ReadKey();
-                            //            break;
+                                    //case 2:
+                                    //    Console.Clear();
+                                    //    ShowProducts(products, new Product());
+                                    //    Console.ReadKey();
+                                    //    break;
 
-                            //        case 3:
+                                    //case 3:
 
-                            //            Console.Clear();
-                            //            ShowProducts(products, new Keyboard());
-                            //            Console.ReadKey();
-                            //            break;
-
-
-
-                            //    }
+                                    //    Console.Clear();
+                                    //    ShowProducts(products, new Keyboard());
+                                    //    Console.ReadKey();
+                                    //    break;
+                                }
 
 
 
-                            //} while (optionProducts != 4);
-
-
-
-
-
-
-
-
-
+                            } while (optionProducts != 4);
                         }
-
-
-
                         break;
 
                     case 2:
@@ -252,21 +224,14 @@ namespace shoppingPortal
                         customer.Id = customers.Count()+1;
                         
                         customers.Add(customer);
-                       
-                       
-                        
                         Console.WriteLine("Customer registered succesfully");
                         Console.ReadKey();
-
-
                         break;
 
                     case 3:
                         var cw = new CsvWriter<Person>();
                         cw.Write(customers, "customers.csv");
                         break;
-
-
                 }
             } while (option != 3);
         }

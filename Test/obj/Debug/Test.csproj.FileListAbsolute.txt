@@ -1,0 +1,5 @@
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\Test\bin\Debug\Test.dll
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\Test\bin\Debug\Test.pdb
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\Test\obj\Debug\Test.csproj.CoreCompileInputs.cache
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\Test\obj\Debug\Test.dll
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\Test\obj\Debug\Test.pdb

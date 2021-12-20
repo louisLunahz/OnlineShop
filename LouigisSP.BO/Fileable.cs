@@ -15,13 +15,10 @@ namespace LouigisSP.BO
             {
                 string output = "";
 
-            var declaredProperties = GetType().GetProperties(System.Reflection.BindingFlags.DeclaredOnly);
-            var inheritedProps = GetType().BaseType.GetProperties();
-            var properties = inheritedProps.Concat(declaredProperties).ToArray();
-
-
-
-
+            Type type1 = GetType();
+            var declaredProperties = type1.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+            var inheritedProps = type1.BaseType.GetProperties();
+            PropertyInfo[] properties = inheritedProps.Concat(declaredProperties).ToArray();
 
             for (var i = 0; i < properties.Length; i++)
                 {
@@ -199,10 +196,11 @@ namespace LouigisSP.BO
         public virtual void AssignValuesFromCsv(string[] propertyValues)
         {
             Type type1 = GetType();
-            var declaredProperties = type1.GetProperties(System.Reflection.BindingFlags.DeclaredOnly);
-            var inheritedProps = type1.BaseType.GetProperties();
-            PropertyInfo[] properties;
-                 properties = type1.GetProperties();
+             var declaredProperties = type1.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+             var inheritedProps = type1.BaseType.GetProperties();
+            PropertyInfo[] properties = inheritedProps.Concat(declaredProperties).ToArray();
+
+          
             
             
             for (var i = 0; i < properties.Length; i++)
@@ -230,12 +228,17 @@ namespace LouigisSP.BO
                     switch (type)
                     {
                         case "Int32":
-                            properties[i].SetValue(this,
-                                            int.Parse(propertyValues[i]));
+                            properties[i].SetValue(this, int.Parse(propertyValues[i]));
+
                             break;
                         case "DateTime":
                             properties[i].SetValue(this, DateTime.Parse(propertyValues[i]));
                             break;
+                        case "Single":
+                            properties[i].SetValue(this, float.Parse(propertyValues[i]));
+
+                            break;
+                       
                         default:
                             properties[i].SetValue(this, propertyValues[i]);
                             break;

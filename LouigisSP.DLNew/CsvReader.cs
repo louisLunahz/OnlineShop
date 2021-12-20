@@ -4,8 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LouigisSP.BO;
 
-namespace LouigisSP.BO
+namespace LouigisSP.DL
 {
     public class CsvReader<T> where T : Fileable, new()
     {
@@ -14,7 +15,7 @@ namespace LouigisSP.BO
            
             var objects = new List<T>();
            
-            Console.WriteLine(Directory.GetCurrentDirectory());
+           
             using (var sr = new StreamReader(filePath))
             {
                 bool headersRead = true;

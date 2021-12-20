@@ -31,8 +31,6 @@ namespace LouigisSP.BO
         {
         }
 
-       
-
         public string Id { get => id; set => id = value; }
         public string Name { get => name; set => name = value; }
         public string Brand { get => brand; set => brand = value; }
@@ -40,5 +38,21 @@ namespace LouigisSP.BO
         public string Color { get => color; set => color = value; }
         public float Price { get => price; set => price = value; }
         public int Stock { get => stock; set => stock = value; }
+
+        public virtual void PrintAllDetails()
+        {
+            Console.Clear();
+            Console.WriteLine("Name: "+ name);
+            Console.WriteLine("Brand: " + brand);
+            Console.WriteLine("Model: " + model);
+            Console.WriteLine("Color: " + color);
+            Console.WriteLine("Price: " + price);
+            Console.WriteLine("Stock: "+stock);
+        }
+
+        public override string ToString()
+        {
+            return "Name: " + name + "    Brand:" + brand + "    Model:" + model + "    Color:" + color + "    Price:" + price + "    Stock:" + stock; 
+        }
     }
 }

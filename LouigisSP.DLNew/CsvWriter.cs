@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LouigisSP.BO
+namespace LouigisSP.DL
 {
 	public class CsvWriter<T> where T : Fileable
 	{

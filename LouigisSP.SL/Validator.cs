@@ -8,13 +8,8 @@ using LouigisSP.BO;
 
 namespace LouigisSP.SL
 {
-   public  class Validator
+   public  static class Validator
     {
-
-        public Validator() { 
-        
-        }
-        
         public static bool ComparePass(string pass, Person person)
         {
             if (pass == person.Pass)
@@ -25,20 +20,18 @@ namespace LouigisSP.SL
         }
 
 
-
+        //checks the password to be strong, password must have at least 8 characters, must contain at least one capital letter
         public static bool VerifyPassword(string password)
         {
 
             string hasNumber = @"[0-9]+";
             string hasUpperChar = @"[A-Z]+";
             string hasMinimum8Chars = @".{8,}";
-
-
             return (Regex.IsMatch(password, hasNumber) && Regex.IsMatch(password, hasUpperChar) && Regex.IsMatch(password, hasMinimum8Chars));
 
         }
 
-
+        //checks the name to have more than 3 letters
         public static bool CheckName(string name)
         {
             bool isItCorrect;
@@ -50,6 +43,7 @@ namespace LouigisSP.SL
             return isItCorrect;
         }
 
+        //checks the email to be well formated 
         public static bool CheckEmail(string email)
         {
             bool isEmailCorrect;
@@ -72,14 +66,12 @@ namespace LouigisSP.SL
                 {
                     validDateOfBirth = true;
                 }
-
-
-
             }
             return validDateOfBirth;
         }
 
-
+        //checks for a phone number to have 10 digits and accepts the following formats
+        //2222222222, 222-222-2222, 
         public static bool CheckPhoneNumber(string phone)
         {
             string pattern = @"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$";
