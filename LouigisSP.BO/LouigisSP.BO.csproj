@@ -45,6 +45,7 @@
     <Compile Include="Fileable.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="Employee.cs" />
+    <Compile Include="IEditInfo.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductOB.cs" />

@@ -7,3 +7,5 @@ C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LouigisSP.SL\bin\Debu
 C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LouigisSP.SL\obj\Debug\LouigisSP.SL.csproj.CopyComplete
 C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LouigisSP.SL\obj\Debug\LouigisSP.SL.dll
 C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LouigisSP.SL\obj\Debug\LouigisSP.SL.pdb
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LouigisSP.SL\bin\Debug\LouigisSP.DLNew.dll
+C:\Users\jose.hernandez\source\repos\shoppingPortal 3Layer\LouigisSP.SL\bin\Debug\LouigisSP.DLNew.pdb

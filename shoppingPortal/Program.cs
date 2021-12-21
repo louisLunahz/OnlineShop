@@ -9,22 +9,27 @@ using LouigisSP.BO;
 using LouigisSP.SL;
 
 
+
 namespace shoppingPortal
 {
     class Program
     {
         static void Main(string[] args)
         {
-            //getting the data from the csv files
-            bool passCorrect;
-            var cr = new CsvReader<Customer>();
+
+
+            CustomerOperations co = new CustomerOperations();
+            ProductOperations po = new ProductOperations();
+
+            
             var cr2 = new CsvReader<Admin>();
             var cr3 = new CsvReader<Employee>();
-            var cr4 = new CsvReader<Product>();
-            var customers = cr.Read("customers.csv", false).ToList();
-            var products = cr4.Read("products.csv", false).ToList();
+
+            var customers = co.getCustomers();
+            var products = po.getProducts();
             var admins = cr2.Read("admins.csv", false).ToList();
             var employees = cr3.Read("employees.csv", false).ToList();
+            bool passCorrect;
             List<Person> persons = customers.Concat<Person>(employees).Concat<Person>(admins).ToList();
             bool validOption;
             int option;
@@ -40,7 +45,7 @@ namespace shoppingPortal
                 {
                     case 1:
                         Person person;
-                      
+
                         do
                         {
                             Console.Clear();
@@ -53,19 +58,23 @@ namespace shoppingPortal
                             passCorrect = Validator.ComparePass(Console.ReadLine(), person);
 
                         } while (!passCorrect);
-                        if (person is Admin)
+                        if (person is Admin)//person is admin
                         {
                             Console.WriteLine("Welcome Admin: " + person.FirstName + " " + person.LastName);
-                            Console.ReadKey();
+                            //AdminMenu();
+
+
+
+
                         }
-                        else if (person is Employee)
+                        else if (person is Employee)//person is employee
                         {
                             Console.WriteLine("Welcome Employee: " + person.FirstName + " " + person.LastName);
                             Console.ReadKey();
                         }
-                        else if (person is Customer)
+                        else if (person is Customer)//person is customer
                         {
-                            Console.WriteLine("Welcome customer: "+ person.FirstName+"  "+person.LastName);
+                            Console.WriteLine("Welcome customer: " + person.FirstName + "  " + person.LastName);
                             int optionProducts;
                             bool valid;
                             do
@@ -73,16 +82,14 @@ namespace shoppingPortal
 
                                 Console.Clear();
                                 Console.WriteLine("1.-Show all products");
-                                Console.WriteLine("2.---------------------");
-                                Console.WriteLine("3.---------------------");
-                                Console.WriteLine("4.-exit");
+                                Console.WriteLine("2.-exit");
                                 valid = int.TryParse(Console.ReadLine(), out optionProducts);
 
                                 switch (optionProducts)
                                 {
                                     case 1:
                                         Console.Clear();
-                                        ShowProducts(products);
+                                        po.ShowProducts(products);
                                         string idKeyboard;
                                         Product product;
 
@@ -116,23 +123,23 @@ namespace shoppingPortal
 
                                         break;
 
-                                    //case 2:
-                                    //    Console.Clear();
-                                    //    ShowProducts(products, new Product());
-                                    //    Console.ReadKey();
-                                    //    break;
+                                        //case 2:
+                                        //    Console.Clear();
+                                        //    ShowProducts(products, new Product());
+                                        //    Console.ReadKey();
+                                        //    break;
 
-                                    //case 3:
+                                        //case 3:
 
-                                    //    Console.Clear();
-                                    //    ShowProducts(products, new Keyboard());
-                                    //    Console.ReadKey();
-                                    //    break;
+                                        //    Console.Clear();
+                                        //    ShowProducts(products, new Keyboard());
+                                        //    Console.ReadKey();
+                                        //    break;
                                 }
 
 
 
-                            } while (optionProducts != 4);
+                            } while (optionProducts != 2);
                         }
                         break;
 
@@ -152,6 +159,8 @@ namespace shoppingPortal
                         string dateOfBirth;
 
                         Customer customer = new Customer();
+
+
                         do
                         {
                             Console.WriteLine("Enter email to register");
@@ -221,8 +230,8 @@ namespace shoppingPortal
                             isValidDOB = Validator.CheckDateOfBirth(dateOfBirth = Console.ReadLine());
                         } while (!isValidDOB);
                         customer.DateOfBirth = DateTime.Parse(dateOfBirth);
-                        customer.Id = customers.Count()+1;
-                        
+                        customer.Id = customers.Count() + 1;
+
                         customers.Add(customer);
                         Console.WriteLine("Customer registered succesfully");
                         Console.ReadKey();
@@ -238,21 +247,62 @@ namespace shoppingPortal
 
 
 
-        public static Person SearchPersonByEmail(string email, List<Person>persons) {
-           Person per  =
-               (from person in persons
-                where person.Email == email
-                select person).SingleOrDefault<Person>();
+        public static Person SearchPersonByEmail(string email, List<Person> persons)
+        {
+            Person per =
+                (from person in persons
+                 where person.Email == email
+                 select person).SingleOrDefault<Person>();
             return per;
 
-            
+
         }
 
 
-        public static void ShowProducts(List<Product> producs) {
-            foreach (Product p in producs) {
-                Console.WriteLine(p.ToString());
-            }
+       
+
+        public static void AdminMenu()
+        {
+            int option = -1;
+            do
+            {
+                Console.WriteLine("1.-Register a new admin");
+                Console.WriteLine("2.-Register a new Employee");
+                Console.WriteLine("3.-exit");
+                try
+                {
+                    option = int.Parse(Console.ReadLine());
+                    switch (option)
+                    {
+                        case 1:
+
+                            Console.WriteLine("Enter first name ");
+                            string fname = Console.ReadLine();
+                            Console.WriteLine("Enter last name");
+                            string lname = Console.ReadLine();
+                            Console.WriteLine("Enter email");
+                            string email = Console.ReadLine();
+                            Console.WriteLine("Enter pass");
+                            string pass = Console.ReadLine();
+                            Console.WriteLine("Enter date of birth");
+
+                            DateTime dateOfBirth = DateTime.Parse(Console.ReadLine());
+
+
+
+                            break;
+
+
+                    }
+                }
+                catch (System.FormatException e)
+                {
+                    Console.WriteLine("Invalid Option");
+                }
+
+
+
+            } while (option != 3);
         }
 
 

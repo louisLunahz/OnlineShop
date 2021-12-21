@@ -52,7 +52,7 @@ namespace LouigisSP.BO
 
         public override string ToString()
         {
-            return "Name: " + name + "    Brand:" + brand + "    Model:" + model + "    Color:" + color + "    Price:" + price + "    Stock:" + stock; 
+            return "Id: "+id+"    Name: " + name + "    Brand:" + brand + "    Model:" + model + "    Color:" + color + "    Price:" + price + "    Stock:" + stock; 
         }
     }
 }

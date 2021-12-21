@@ -43,9 +43,10 @@
   <ItemGroup>
     <Compile Include="CsvReader.cs" />
     <Compile Include="CsvWriter.cs" />
-    <Compile Include="ProductsData.cs" />
+    <Compile Include="CustomerDAL.cs" />
+    <Compile Include="EmployeeDAL.cs" />
+    <Compile Include="ProductDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PersonsData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LouigisSP.BO\LouigisSP.BO.csproj">

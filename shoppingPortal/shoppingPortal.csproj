@@ -48,9 +48,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\LouigisSP.BO\LouigisSP.BO.csproj">
       <Project>{c2f7a630-d4eb-4313-8f64-90005a67eec9}</Project>
       <Name>LouigisSP.BO</Name>
@@ -63,6 +60,9 @@
       <Project>{557c09fa-14ad-47e3-922d-5568325a7072}</Project>
       <Name>LouigisSP.SL</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

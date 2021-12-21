@@ -4,16 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
+
 namespace LouigisSP.BO
 {
-    public class Customer : Person
+    public class Customer : Person, IEditInfo
     {
+        string shippingAddress;
+        string billingAddress;
         public Customer() : base()
         {
 
         }
-        string shippingAddress;
-        string billingAddress;
+        
         public string ShippingAddress { get => shippingAddress; set => shippingAddress = value; }
         public string BillingAddress { get => billingAddress; set => billingAddress = value; }
 
@@ -23,7 +27,13 @@ namespace LouigisSP.BO
             this.shippingAddress = shippingAddress;
             this.billingAddress = billingAddress;
         }
-       
-       
+
+        public void EditInfo()
+        {
+            Console.WriteLine("enter firs Name");
+             Console.ReadLine();
+
+
+        }
     }
 }

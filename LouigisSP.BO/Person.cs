@@ -31,7 +31,7 @@ namespace LouigisSP.BO
             this.DateOfRegistration = dateOfRegistration;
             this.DateOfBirth = dateOfBirth;
 
-            this.email = "";
+            
 
         }
      
