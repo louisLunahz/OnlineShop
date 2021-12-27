@@ -13,6 +13,8 @@ namespace LouigisSP.BO
 
         }
 
+       
+
         public Admin(int id, string firstName, string lastName, string phoneNumber, string email, string pass, DateTime dateOfRegistration, DateTime dateOfBirth) : base(id, firstName, lastName, phoneNumber, email, pass, dateOfRegistration, dateOfBirth)
         {
 

@@ -18,17 +18,28 @@ namespace LouigisSP.BO
 
         public Product(string id, string name, string brand, string model, string color, float price, int stock)
         {
-            this.Id = id;
-            this.Name = name;
-            this.Brand = brand;
-            this.Model = model;
-            this.Color = color;
-            this.Price = price;
-            this.Stock = stock;
+            this.id = id;
+            this.name = name;
+            this.brand = brand;
+            this.model = model;
+            this.color = color;
+            this.price = price;
+            this.stock = stock;
         }
 
         public Product()
         {
+        }
+
+        public Product(string id, string name, string brand, string model, string color, string price, string stock) {
+            this.id = id;
+            this.name = name;
+            this.brand = brand;
+            this.model = model;
+            this.color = color;
+            this.price = float.Parse(price);
+            this.stock = int.Parse(stock);
+
         }
 
         public string Id { get => id; set => id = value; }
@@ -39,20 +50,23 @@ namespace LouigisSP.BO
         public float Price { get => price; set => price = value; }
         public int Stock { get => stock; set => stock = value; }
 
-        public virtual void PrintAllDetails()
-        {
-            Console.Clear();
-            Console.WriteLine("Name: "+ name);
-            Console.WriteLine("Brand: " + brand);
-            Console.WriteLine("Model: " + model);
-            Console.WriteLine("Color: " + color);
-            Console.WriteLine("Price: " + price);
-            Console.WriteLine("Stock: "+stock);
-        }
+      
 
         public override string ToString()
         {
             return "Id: "+id+"    Name: " + name + "    Brand:" + brand + "    Model:" + model + "    Color:" + color + "    Price:" + price + "    Stock:" + stock; 
         }
+
+        public void showDetails() {
+            Console.Write("Id: "+id+" ");
+            Console.Write("Name: "+name + " ");
+            Console.Write("Brand: "+brand + " ");
+            Console.Write("Model: "+model + " ");
+            Console.Write("Color: "+color + " ");
+            Console.Write("Price: "+price + " ");
+
+        }
+
+       
     }
 }

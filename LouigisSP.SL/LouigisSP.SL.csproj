@@ -41,11 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomerOperations.cs" />
-    <Compile Include="EmployeeOperations.cs" />
-    <Compile Include="ProductOperations.cs" />
+    <Compile Include="Authenticator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Searcher.cs" />
+    <Compile Include="ShoppingCartOperations.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>

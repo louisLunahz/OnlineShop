@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,8 +9,7 @@ using System.Threading.Tasks;
 using LouigisSP.DL;
 using LouigisSP.BO;
 using LouigisSP.SL;
-
-
+using LougisSP.BO;
 
 namespace shoppingPortal
 {
@@ -16,244 +17,70 @@ namespace shoppingPortal
     {
         static void Main(string[] args)
         {
-
-
-            CustomerOperations co = new CustomerOperations();
-            ProductOperations po = new ProductOperations();
-
-            
-            var cr2 = new CsvReader<Admin>();
-            var cr3 = new CsvReader<Employee>();
-
-            var customers = co.getCustomers();
-            var products = po.getProducts();
-            var admins = cr2.Read("admins.csv", false).ToList();
-            var employees = cr3.Read("employees.csv", false).ToList();
-            bool passCorrect;
-            List<Person> persons = customers.Concat<Person>(employees).Concat<Person>(admins).ToList();
-            bool validOption;
-            int option;
-            do
+            bool showMenu = true;
+            while (showMenu)
             {
-                Console.WriteLine("++++++++++++++++++++++++++++++++++++++++");
-                Console.WriteLine("++++++++++++++++WELCOME");
-                Console.WriteLine("1.-Sign in ");
-                Console.WriteLine("2.-Sign up");
-                Console.WriteLine("3.-exit");
-                validOption = int.TryParse(Console.ReadLine(), out option);
-                switch (option)
-                {
-                    case 1:
-                        Person person;
+                showMenu = MainMenu();
+            }
 
-                        do
-                        {
-                            Console.Clear();
-                            Console.WriteLine("Enter email");
-                            person = SearchPersonByEmail(Console.ReadLine(), persons);
-                        } while (person == null);
-                        do
-                        {
-                            Console.WriteLine("Enter pass");
-                            passCorrect = Validator.ComparePass(Console.ReadLine(), person);
-
-                        } while (!passCorrect);
-                        if (person is Admin)//person is admin
-                        {
-                            Console.WriteLine("Welcome Admin: " + person.FirstName + " " + person.LastName);
-                            //AdminMenu();
-
-
-
-
-                        }
-                        else if (person is Employee)//person is employee
-                        {
-                            Console.WriteLine("Welcome Employee: " + person.FirstName + " " + person.LastName);
-                            Console.ReadKey();
-                        }
-                        else if (person is Customer)//person is customer
-                        {
-                            Console.WriteLine("Welcome customer: " + person.FirstName + "  " + person.LastName);
-                            int optionProducts;
-                            bool valid;
-                            do
-                            {
-
-                                Console.Clear();
-                                Console.WriteLine("1.-Show all products");
-                                Console.WriteLine("2.-exit");
-                                valid = int.TryParse(Console.ReadLine(), out optionProducts);
-
-                                switch (optionProducts)
-                                {
-                                    case 1:
-                                        Console.Clear();
-                                        po.ShowProducts(products);
-                                        string idKeyboard;
-                                        Product product;
-
-                                        do
-                                        {
-                                            Console.WriteLine(" Enter the id of the product to see full details or r to return ");
-                                            idKeyboard = Console.ReadLine();
-                                            if (idKeyboard == "r")
-                                            {
-                                                Console.WriteLine("leaving...");
-                                                Console.ReadKey();
-                                                break;
-                                            }
-
-                                            product = Searcher.GetProductFromList(products, idKeyboard);
-
-                                            if (product is null)
-                                            {
-                                                Console.WriteLine("not found");
-                                                Console.ReadKey();
-                                            }
-                                            else
-                                            {
-                                                product.PrintAllDetails();
-                                                Console.ReadKey();
-                                            }
-                                        } while (idKeyboard == "" || idKeyboard is null);
-
-
-
-
-                                        break;
-
-                                        //case 2:
-                                        //    Console.Clear();
-                                        //    ShowProducts(products, new Product());
-                                        //    Console.ReadKey();
-                                        //    break;
-
-                                        //case 3:
-
-                                        //    Console.Clear();
-                                        //    ShowProducts(products, new Keyboard());
-                                        //    Console.ReadKey();
-                                        //    break;
-                                }
-
-
-
-                            } while (optionProducts != 2);
-                        }
-                        break;
-
-                    case 2:
-                        person = null;
-                        string pass;
-                        bool nameCorrect;
-                        string email;
-                        bool emailCorrect;
-                        string shippingAddress;
-                        string billingAdreess;
-                        bool isValidNumber;
-                        string phoneNumber;
-                        bool isValidDOB;
-                        string firstName;
-                        string lastName;
-                        string dateOfBirth;
-
-                        Customer customer = new Customer();
-
-
-                        do
-                        {
-                            Console.WriteLine("Enter email to register");
-                            email = Console.ReadLine();
-                            emailCorrect = Validator.CheckEmail(email);
-                            person = SearchPersonByEmail(email, customers.Cast<Person>().ToList());
-                            if (!emailCorrect)
-                            {
-                                Console.WriteLine("email bad formated");
-                            }
-                            if (person != null)
-                            {
-                                Console.WriteLine("email  already registered");
-                            }
-                        } while (!emailCorrect || !(person is null));
-                        customer.Email = email;
-                        do
-                        {
-                            Console.WriteLine("Enter password: ");
-                            passCorrect = Validator.VerifyPassword(pass = Console.ReadLine());
-                        } while (passCorrect == false);
-
-
-                        do
-                        {
-                            Console.WriteLine("Enter password again: ");
-                            passCorrect = Console.ReadLine() == pass;
-                        } while (passCorrect == false);
-
-                        customer.Pass = pass;
-
-                        do
-                        {
-                            Console.WriteLine("Enter First Name");
-                            nameCorrect = Validator.CheckName(firstName = Console.ReadLine());
-                        } while (nameCorrect == false);
-                        customer.FirstName = firstName;
-                        do
-                        {
-                            Console.WriteLine("Enter Last Name");
-                            nameCorrect = Validator.CheckName(lastName = Console.ReadLine());
-                        } while (nameCorrect == false);
-                        customer.LastName = lastName;
-                        do
-                        {
-                            Console.WriteLine("Enter shipping Adress");
-                            shippingAddress = Console.ReadLine();
-                        } while (string.IsNullOrEmpty(shippingAddress));
-                        customer.ShippingAddress = shippingAddress;
-
-                        do
-                        {
-                            Console.WriteLine("Enter billing Adress");
-                            billingAdreess = Console.ReadLine();
-                        } while (string.IsNullOrEmpty(billingAdreess));
-                        customer.BillingAddress = billingAdreess;
-                        do
-                        {
-                            Console.WriteLine("Enter your phone number");
-                            isValidNumber = Validator.CheckPhoneNumber(phoneNumber = Console.ReadLine());
-                        } while (!isValidNumber);
-
-                        customer.PhoneNumber = phoneNumber;
-                        do
-                        {
-                            Console.WriteLine("Enter your date of Birth");
-                            isValidDOB = Validator.CheckDateOfBirth(dateOfBirth = Console.ReadLine());
-                        } while (!isValidDOB);
-                        customer.DateOfBirth = DateTime.Parse(dateOfBirth);
-                        customer.Id = customers.Count() + 1;
-
-                        customers.Add(customer);
-                        Console.WriteLine("Customer registered succesfully");
-                        Console.ReadKey();
-                        break;
-
-                    case 3:
-                        var cw = new CsvWriter<Person>();
-                        cw.Write(customers, "customers.csv");
-                        break;
-                }
-            } while (option != 3);
         }
 
+        private static bool MainMenu() {
+            Console.Clear();
+            Console.WriteLine("++++++++++++++++++++++++++++++++++++++++");
+            Console.WriteLine("++++++++++++++++WELCOME");
+            Console.WriteLine("1.-Login as user");
+            Console.WriteLine("2.-Login as Employee");
+            Console.WriteLine("3.-signup to buy from the shop");
+            Console.WriteLine("4.-exit");
 
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    Customer obj_Customer=(Customer)SignIn(new  Customer().GetType(), "sp_retrieveCustomerByEmailAndPass");
+                    if (obj_Customer is null)
+                    {
+                        Console.WriteLine("Could not found that customer");
+                    }
+                    else {
+                        CustomerMenu(obj_Customer);
+                       
+                    }
+                    Console.ReadKey();
+                    return true;
+                    
 
-        public static Person SearchPersonByEmail(string email, List<Person> persons)
-        {
-            Person per =
-                (from person in persons
-                 where person.Email == email
-                 select person).SingleOrDefault<Person>();
-            return per;
+                case "2":
+                    Employee obj_Employee= (Employee)SignIn(new Employee().GetType(), "sp_retrieveEmployeeByEmailAndPass");
+                    if (obj_Employee is null)
+                    {
+                        Console.WriteLine("Could not found that Employee");
+                    }
+                    else {
+                        EmployeeMenu(obj_Employee);
+                    }
+                    Console.ReadKey();
+                    return true;
+                case "3":
+                   bool wasInserted =SignUP();
+                    if (wasInserted)
+                    {
+                        Console.WriteLine("Customer registered succesfully");
+                    }
+                    else {
+                        Console.WriteLine("Error! Customer could not be registered");
+                    }
+                    Console.ReadKey();
+                    return true;
+
+                case "4":
+                    return false;
+
+                default:
+                    Console.WriteLine("not valid option");
+                    return true;
+                   
+            }
 
 
         }
@@ -261,49 +88,257 @@ namespace shoppingPortal
 
        
 
-        public static void AdminMenu()
+        private static Object SignIn(Type type, string storedProcedureName)
         {
-            int option = -1;
-            do
-            {
-                Console.WriteLine("1.-Register a new admin");
-                Console.WriteLine("2.-Register a new Employee");
-                Console.WriteLine("3.-exit");
-                try
-                {
-                    option = int.Parse(Console.ReadLine());
-                    switch (option)
-                    {
-                        case 1:
+            Object obj= null;
+            Console.Clear();
+            Console.WriteLine("Enter email");
+            string email = Console.ReadLine();
+            Console.WriteLine("Enter password");
+            string pass = Console.ReadLine();
+            Authenticator auth = new Authenticator();
+            obj = auth.getSession(type, email, pass, storedProcedureName);
+            return obj;
 
-                            Console.WriteLine("Enter first name ");
-                            string fname = Console.ReadLine();
-                            Console.WriteLine("Enter last name");
-                            string lname = Console.ReadLine();
-                            Console.WriteLine("Enter email");
-                            string email = Console.ReadLine();
-                            Console.WriteLine("Enter pass");
-                            string pass = Console.ReadLine();
-                            Console.WriteLine("Enter date of birth");
-
-                            DateTime dateOfBirth = DateTime.Parse(Console.ReadLine());
-
-
-
-                            break;
-
-
-                    }
-                }
-                catch (System.FormatException e)
-                {
-                    Console.WriteLine("Invalid Option");
-                }
-
-
-
-            } while (option != 3);
         }
+
+        private static bool SignUP() {
+           bool wasInserted = false;
+            Console.Clear();
+            //call the service layer to signUP and the function returns a boolean to know if the customer was registered
+            Console.WriteLine("Enter email");
+            string email = Console.ReadLine();
+            //call the service layer and call a function to know if the email is already in the customers table
+            //if the user is in it, the user is retrieved, 
+            //if the user is not, the functions returns null
+            Authenticator auth = new Authenticator();
+            Object o_user = auth.FindUserByEmail(email);
+            if (!(o_user is null))//user is already registered
+            {
+                Console.WriteLine("user is already registered");
+                Console.ReadKey();
+
+            }
+            else {
+                Tuple<string, string>[] tuplesValues = new Tuple<string, string>[9];
+
+                tuplesValues[3]= Tuple.Create("email", email);
+                Console.WriteLine("Continue registration");
+
+                Console.WriteLine("Enter your new password");
+                string pass=Console.ReadLine();
+                tuplesValues[4] = Tuple.Create("pass", pass);
+                Console.WriteLine("Enter your first name");
+                string fName = Console.ReadLine();
+                tuplesValues[0] = Tuple.Create("firstName", fName);
+                Console.WriteLine("Enter your last name");
+                string lastName = Console.ReadLine();
+                tuplesValues[1] = Tuple.Create("lastName", lastName);
+
+
+                Console.WriteLine("Enter your phone number");
+                string phone = Console.ReadLine();
+                tuplesValues[2] = Tuple.Create("phoneNumber", phone);
+
+
+                Console.WriteLine("Enter your Date of birth");
+                string dob = Console.ReadLine();
+                tuplesValues[6] = Tuple.Create("DateOfBirth", dob);
+
+
+                Console.WriteLine("Enter your shipping Address");
+                string shippingA = Console.ReadLine();
+                tuplesValues[7] = Tuple.Create("shippingAddress", shippingA);
+
+
+                Console.WriteLine("Enter your billing Address");
+                string billingA = Console.ReadLine();
+                tuplesValues[8] = Tuple.Create("billingAddress", billingA);
+                tuplesValues[5] = Tuple.Create("dateOfRegistration", "2021-12-25");
+
+
+
+                 Authenticator obj_Authenticator = new Authenticator();
+                wasInserted= obj_Authenticator.insertIntoTable(tuplesValues, "sp_insertCustomerIntoCustomers");
+               
+
+                
+            }
+
+            return wasInserted;
+
+        }
+
+        private static void CustomerMenu(Customer cus) {
+            //show menu for customers
+            string option="";
+            ShoppingCart pbj_shoppingCart = new ShoppingCart(cus);
+            do {
+              
+                Console.WriteLine("1.-Show all the products");
+                Console.WriteLine("2.-See cart");
+                Console.WriteLine("3.-end session ");
+                switch (option=Console.ReadLine())
+                {
+                    case "1":
+                        buy(ref pbj_shoppingCart);
+                        break;
+
+                    case "2":
+                        if (pbj_shoppingCart.ProductList.Count() >= 1)
+                        {
+                            Console.Clear();
+                            showShoppingCart(ref pbj_shoppingCart);
+                            ShoppingCartOptions(ref pbj_shoppingCart);
+                        }
+                        else {
+                            Console.WriteLine("There are no items in the cart yet");
+                        }
+                       
+                        break;
+
+                }
+
+            } while (option!="3");
+
+           
+            
+        
+        
+        }
+
+
+        private static void EmployeeMenu(Employee obj_Employee) {
+            Console.Clear();
+            //check if the employee is an admin or a normal employee
+            if (obj_Employee.IsAdmin)
+            {
+                Console.WriteLine("Employee is admin");
+            }
+            else {
+                Console.WriteLine("Employee is not admin");
+            }
+        }
+
+        public static void ShowItems(List<Product> products) {
+            //convert the list of objects into a list of the type given 
+            Console.Clear();
+            foreach (var p in products) {
+                Console.WriteLine(p.ToString());
+            }
+        }
+
+        public static bool buy(ref ShoppingCart sp) {
+            QueryExecutor obj_QueryExecutor = new QueryExecutor();
+            List<Object> products = obj_QueryExecutor.retrieveTableFromDatabase(new Product().GetType(), "Products");
+            if (products != null)
+            {
+                List<Product> obj_listProducts = Utilities.ConvertList<List<Product>>(products, new Product().GetType());
+                ShowItems(obj_listProducts);
+                Console.WriteLine("To buy a product, insert the id");
+                string id = Console.ReadLine();
+                Product p = Utilities.searchProductInList(obj_listProducts, id);
+                if (p != null)
+                {
+                    Console.Clear();
+                    Console.WriteLine(p.ToString());
+                    Console.WriteLine("Insert the quantity");
+                    int quantity = int.Parse(Console.ReadLine());
+                    bool isStockEnough = Utilities.CheckQuantity(p, quantity);
+                    if (isStockEnough)
+                    {
+                        sp.ProductList.Add(Tuple.Create(p, quantity));
+                        Console.Clear();
+                        Console.WriteLine("Product added successfully to the cart");
+                    }
+                    else {
+                        Console.WriteLine("Not enough stock");
+                    }
+
+                }
+
+            }
+
+            return true; 
+
+        }
+
+        public static void showShoppingCart(ref ShoppingCart obj_shoppingCart) {
+            float total=0;
+            foreach (var item in obj_shoppingCart.ProductList) {
+                total += item.Item1.Price * item.Item2;
+                
+                item.Item1.showDetails();
+                Console.WriteLine(item.Item1.Price*item.Item2);
+                Console.WriteLine("quantity: " + item.Item2);
+            }
+            Console.WriteLine("Total: "+total);
+        }
+
+        public static void ShoppingCartOptions(ref ShoppingCart obj_shoppingCart )
+        {
+            string option;
+            string[] fields = new String []{ "idCustomer", "idProduct", "quantity", "orderDate"};
+            do {
+                Console.WriteLine("1.-Make Payment ");
+                Console.WriteLine("2.-Remove item from shopping cart");
+                Console.WriteLine("3.-return");
+                option = Console.ReadLine();
+                switch (option) {
+                    case "1":
+                        if (obj_shoppingCart.ProductList.Count >= 1)
+                        {
+
+                            ShoppingCartOperations obj_shoppingCartOperations = new ShoppingCartOperations();
+                            if (obj_shoppingCartOperations.MakePayment(ref obj_shoppingCart, fields))
+                            {
+                                Console.WriteLine("Payment done");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Failed to process the transaction");
+                            }
+                        }
+                        else {
+                            Console.WriteLine("There are no products in the shopping cart");
+                        }
+                      
+
+                        break;
+                    case "2":
+                        Console.Clear();
+                        
+                        if (obj_shoppingCart.ProductList.Count() >= 1)
+                        {
+                            showShoppingCart(ref obj_shoppingCart);
+                            Console.WriteLine("----------------------------------------------------");
+                            Console.WriteLine("Insert the id of the product to be deleted from the cart");
+                            string id = Console.ReadLine();
+                            bool wasRemoved = obj_shoppingCart.DeleteProductFromList(id);
+                            if (wasRemoved)
+                            {
+                                Console.WriteLine("Item removed succesfully from the shopping cart");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Could not find the item");
+                            }
+
+                        }
+                        else {
+                            Console.WriteLine("There are no items in the shopping cart");
+                        }
+                       
+
+                        break;
+                    default:
+                        break;
+                }
+
+            } while (option!="3");
+        
+        }
+
 
 
     }
