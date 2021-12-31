@@ -5,47 +5,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GenericDataAccesLayer
+namespace LouigisSP.DL
 {
-    public class DBManager
+    public static class DBManager
     {
-        private DatabaseHandlerFactory dbFactory;
-        private IDatabaseHandler database;
-        private string providerName;
+        private static DatabaseHandlerFactory dbFactory;
+        private static IDatabaseHandler database;
+        private static string providerName;
 
-        public DBManager(string connectionStringName)
+         static DBManager()
         {
-            dbFactory = new DatabaseHandlerFactory(connectionStringName);
+            dbFactory = new DatabaseHandlerFactory("Test");
             database = dbFactory.CreateDatabase();
             providerName = dbFactory.GetProviderName();
         }
 
-        public IDbConnection GetDatabasecOnnection()
+
+        public static IDbConnection GetDatabasecOnnection()
         {
             return database.CreateConnection();
         }
 
-        public void CloseConnection(IDbConnection connection)
+        public static void CloseConnection(IDbConnection connection)
         {
             database.CloseConnection(connection);
         }
 
-        public IDbDataParameter CreateParameter(string name, object value, DbType dbType)
+        public static IDbDataParameter CreateParameter(string name, object value, DbType dbType)
         {
             return DataParameterManager.CreateParameter(providerName, name, value, dbType, ParameterDirection.Input);
         }
 
-        public IDbDataParameter CreateParameter(string name, int size, object value, DbType dbType)
+        public static IDbDataParameter CreateParameter(string name, int size, object value, DbType dbType)
         {
             return DataParameterManager.CreateParameter(providerName, name, size, value, dbType, ParameterDirection.Input);
         }
 
-        public IDbDataParameter CreateParameter(string name, int size, object value, DbType dbType, ParameterDirection direction)
+        public static IDbDataParameter CreateParameter(string name, int size, object value, DbType dbType, ParameterDirection direction)
         {
             return DataParameterManager.CreateParameter(providerName, name, size, value, dbType, direction);
         }
 
-        public DataTable GetDataTable(string commandText, CommandType commandType, IDbDataParameter[] parameters = null)
+        public static DataTable GetDataTable(string commandText, CommandType commandType, IDbDataParameter[] parameters = null)
         {
             using (var connection = database.CreateConnection())
             {
@@ -70,7 +71,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public DataSet GetDataSet(string commandText, CommandType commandType, IDbDataParameter[] parameters = null)
+        public static DataSet GetDataSet(string commandText, CommandType commandType, IDbDataParameter[] parameters = null)
         {
             using (var connection = database.CreateConnection())
             {
@@ -95,7 +96,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public IDataReader GetDataReader(string commandText, CommandType commandType, IDbDataParameter[] parameters, out IDbConnection connection)
+        public static IDataReader GetDataReader(string commandText, CommandType commandType, IDbDataParameter[] parameters, out IDbConnection connection)
         {
             IDataReader reader = null;
             connection = database.CreateConnection();
@@ -115,7 +116,7 @@ namespace GenericDataAccesLayer
             return reader;
         }
 
-        public void Delete(string commandText, CommandType commandType, IDbDataParameter[] parameters = null)
+        public static void Delete(string commandText, CommandType commandType, IDbDataParameter[] parameters = null)
         {
             using (var connection = database.CreateConnection())
             {
@@ -136,7 +137,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public void Insert(string commandText, CommandType commandType, IDbDataParameter[] parameters)
+        public static void Insert(string commandText, CommandType commandType, IDbDataParameter[] parameters)
         {
             using (var connection = database.CreateConnection())
             {
@@ -157,7 +158,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public int Insert(string commandText, CommandType commandType, IDbDataParameter[] parameters, out int lastId)
+        public static int Insert(string commandText, CommandType commandType, IDbDataParameter[] parameters, out int lastId)
         {
             lastId = 0;
             using (var connection = database.CreateConnection())
@@ -182,7 +183,7 @@ namespace GenericDataAccesLayer
             return lastId;
         }
 
-        public long Insert(string commandText, CommandType commandType, IDbDataParameter[] parameters, out long lastId)
+        public static long Insert(string commandText, CommandType commandType, IDbDataParameter[] parameters, out long lastId)
         {
             lastId = 0;
             using (var connection = database.CreateConnection())
@@ -207,7 +208,7 @@ namespace GenericDataAccesLayer
             return lastId;
         }
 
-        public void InsertWithTransaction(string commandText, CommandType commandType, IDbDataParameter[] parameters)
+        public static void InsertWithTransaction(string commandText, CommandType commandType, IDbDataParameter[] parameters)
         {
             IDbTransaction transactionScope = null;
             using (var connection = database.CreateConnection())
@@ -242,7 +243,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public void InsertWithTransaction(string commandText, CommandType commandType, IsolationLevel isolationLevel, IDbDataParameter[] parameters)
+        public static void InsertWithTransaction(string commandText, CommandType commandType, IsolationLevel isolationLevel, IDbDataParameter[] parameters)
         {
             IDbTransaction transactionScope = null;
             using (var connection = database.CreateConnection())
@@ -277,7 +278,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public void Update(string commandText, CommandType commandType, IDbDataParameter[] parameters)
+        public static void Update(string commandText, CommandType commandType, IDbDataParameter[] parameters)
         {
             using (var connection = database.CreateConnection())
             {
@@ -298,7 +299,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public void UpdateWithTransaction(string commandText, CommandType commandType, IDbDataParameter[] parameters)
+        public static void UpdateWithTransaction(string commandText, CommandType commandType, IDbDataParameter[] parameters)
         {
             IDbTransaction transactionScope = null;
             using (var connection = database.CreateConnection())
@@ -333,7 +334,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public void UpdateWithTransaction(string commandText, CommandType commandType, IsolationLevel isolationLevel, IDbDataParameter[] parameters)
+        public static void UpdateWithTransaction(string commandText, CommandType commandType, IsolationLevel isolationLevel, IDbDataParameter[] parameters)
         {
             IDbTransaction transactionScope = null;
             using (var connection = database.CreateConnection())
@@ -368,7 +369,7 @@ namespace GenericDataAccesLayer
             }
         }
 
-        public object GetScalarValue(string commandText, CommandType commandType, IDbDataParameter[] parameters = null)
+        public static object GetScalarValue(string commandText, CommandType commandType, IDbDataParameter[] parameters = null)
         {
             using (var connection = database.CreateConnection())
             {

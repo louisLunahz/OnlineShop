@@ -18,6 +18,8 @@ namespace LouigisSP.BO
 
         }
 
+       
+
 
         public Customer(string id, string firstName, string lastName, string phoneNumber, string email, string pass, string dateOfRegistration, string dateOfBirth, string shippingAddress, string billingAddress)
             : base(int.Parse(id), firstName, lastName, phoneNumber, email, pass, DateTime.Parse(dateOfRegistration),DateTime.Parse(dateOfBirth))
@@ -44,6 +46,13 @@ namespace LouigisSP.BO
              Console.ReadLine();
 
 
+        }
+
+
+        public override string ToString()
+        {
+            return "Full name: " + FirstName + " " + " " + LastName + "  Phone Number: " + PhoneNumber +
+                "   email: " + Email + "    shippingAddress: " + shippingAddress+"  billing Address: "+ billingAddress;
         }
     }
 }

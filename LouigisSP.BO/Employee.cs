@@ -13,8 +13,9 @@ namespace LouigisSP.BO
         
         }
 
-        public Employee(int id, string firstName, string lastName, string phoneNumber, string email, string pass, DateTime dateOfRegistration, DateTime dateOfBirth, int isAdmin ) : base(id, firstName, lastName, phoneNumber, email, pass, dateOfRegistration, dateOfBirth)
+        public Employee(int id, string firstName, string lastName, string phoneNumber, string email, string pass, DateTime dateOfRegistration, DateTime dateOfBirth, bool isAdmin ) : base(id, firstName, lastName, phoneNumber, email, pass, dateOfRegistration, dateOfBirth)
         {
+            this.isAdmin = isAdmin;
 
         }
 

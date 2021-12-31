@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GenericDataAccesLayer
+namespace LouigisSP.DL
 {
     public interface IDatabaseHandler
     {
