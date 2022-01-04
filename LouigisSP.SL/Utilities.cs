@@ -12,12 +12,19 @@ namespace LouigisSP.SL
 
         public static Product searchProductInList(List<Product> products, string id) {
             Product p = null;
-            foreach (Product product in products) {
-                if (product.Id==id) {
-                    p = product;
+            int int_id;
+            if (int.TryParse(id, out int_id)) {
+                foreach (Product product in products)
+                {
+                    if (product.Id == int_id)
+                    {
+                        p = product;
+                    }
+
                 }
-            
+
             }
+            
             return p;
         }
 

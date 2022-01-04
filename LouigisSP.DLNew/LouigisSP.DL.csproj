@@ -50,7 +50,6 @@
     <Compile Include="GenericDataLayer\DBManager.cs" />
     <Compile Include="GenericDataLayer\IDatabaseHandler.cs" />
     <Compile Include="GenericDataLayer\OdbcDataAccess.cs" />
-    <Compile Include="GenericDataLayer\Program.cs" />
     <Compile Include="GenericDataLayer\SqlDataAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryExecutor\QueryExecutor.cs" />

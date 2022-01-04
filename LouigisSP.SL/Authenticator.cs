@@ -13,7 +13,7 @@ namespace LouigisSP.SL
     {
 
 
-        public Customer GetCustomers(Tuple<string, string> customerCredentials)
+        public Customer GetCustomer(Tuple<string, string> customerCredentials) //Tuple<string email, string pass>
         {
             Customer obj_customer = null;
             IDbDataParameter[] parameters = GetParametersForPerson(customerCredentials);
@@ -61,11 +61,11 @@ namespace LouigisSP.SL
 
         }
 
-        public Employee GetEmployees(Tuple<string, string> employeeCredentials)
+        public Employee GetEmployee(Tuple<string, string> employeeCredentials)
         {
             Employee obj_Employee = null;
             IDbDataParameter[] parameters = GetParametersForPerson(employeeCredentials);
-            DataTable dataTable = DBManager.GetDataTable("sp_retrieveCustomerByEmailAndPass", CommandType.StoredProcedure, parameters);
+            DataTable dataTable = DBManager.GetDataTable("sp_retrieveEmployeeByEmailAndPass", CommandType.StoredProcedure, parameters);
             if (dataTable.Rows.Count >= 1)
             {
                 Console.WriteLine("it was retrieved succesfully");
@@ -96,45 +96,77 @@ namespace LouigisSP.SL
                 obj_customer.ShippingAddress = (string)row["shippingAddress"];
                 obj_customer.BillingAddress = (string)row["billingAddress"];
             }
-            else
-            {
-                Console.WriteLine("Error retrieving the user");
-            }
+           
 
 
 
             return obj_customer;
         }
-        
-
-     
 
 
-        public Person FindUserByEmail(string email)
-        {
-            Person obj_person = null;
+        public bool insertProduct(string []values) {
+            bool wasInserted = false;
+            try {
+                if (values != null)
+                {
+                    int lastid;
+                    IDbDataParameter[] parameters = new IDbDataParameter[values.Length];
+                    parameters[0] = DBManager.CreateParameter("@name", values[0], DbType.String);
+                    parameters[1] = DBManager.CreateParameter("@brand", values[1], DbType.String);
+                    parameters[2] = DBManager.CreateParameter("@model", values[2], DbType.String);
+                    parameters[3] = DBManager.CreateParameter("@color", values[3], DbType.String);
+                    parameters[4] = DBManager.CreateParameter("@price", values[4], DbType.Currency);
+                    parameters[5] = DBManager.CreateParameter("@stock", values[5], DbType.Int32);
+                    parameters[6] = DBManager.CreateParameter("@extraInfo", values[6], DbType.String);
+                    DBManager.Insert("spAddProductToProductsTable", commandType: CommandType.StoredProcedure, parameters, out lastid);
+                    Console.WriteLine("last id: " + lastid);
+                    wasInserted = true;
+
+                }
+               
+
+            }
+            catch (Exception e) {
+                Console.WriteLine("there was an error while trying toinsert the value to the database");
+            }
            
-            if (email != null && email != "")
-            {
-                
-            }
-            return obj_person;
-
+            return wasInserted; 
+        
         }
 
-        public bool InsertIntoTable(Tuple<string, string>[] values, string procedureName)
-        {
-            bool isInserted = false;
-            //call the data layer
-            for (int i = 0; i < values.Length; i++)
-            {
-                Console.WriteLine(values[i].Item1 + "      " + values[i].Item2);
-            }
-            QueryExecutor obj_QueryExecutor = new QueryExecutor();
-            isInserted = obj_QueryExecutor.insertObjectIntoTable(values, procedureName);
 
-            return isInserted;
+        public bool InsertCustomer(string []values) {
+         
+            bool wasInserted = false;
+            try {
+                if (values != null)
+                {
+                    
+                    IDbDataParameter[] parameters = new IDbDataParameter[9];
+                    parameters[0] = DBManager.CreateParameter("@firstName", values[0], DbType.String);
+                    parameters[1] = DBManager.CreateParameter("@lastName", values[1], DbType.String);
+                    parameters[2] = DBManager.CreateParameter("@phoneNumber", values[2], DbType.String);
+                    parameters[3] = DBManager.CreateParameter("@email", values[3], DbType.String);
+                    parameters[4] = DBManager.CreateParameter("@pass", values[4], DbType.String);
+                    parameters[5] = DBManager.CreateParameter("@dateOfRegistration",DateTime.Now, DbType.DateTime);
+                    parameters[6] = DBManager.CreateParameter("@dateOfBirth", values[5], DbType.DateTime);
+                    parameters[7] = DBManager.CreateParameter("@shippingAddress", values[6], DbType.String);
+                    parameters[8] = DBManager.CreateParameter("@billingAddress", values[7], DbType.String);
+                    DBManager.Insert("sp_InsertCustomerToCustomersTable", commandType: CommandType.StoredProcedure, parameters);
+                    wasInserted = true;
+
+                }
+               
+
+            }
+            catch (Exception e) {
+                Console.WriteLine("there was an error while trying toinsert the value to the database");
+            }
+           
+            return wasInserted; 
+        
         }
+
 
 
 

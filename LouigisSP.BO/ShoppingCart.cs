@@ -29,7 +29,7 @@ namespace LougisSP.BO
             bool wasDeleted = false;
             for (int i = 0; i < productList.Count(); i++)
             {
-                if (productList.ElementAt(i).Item1.Id == id)
+                if (productList.ElementAt(i).Item1.Id == int.Parse(id))
                 {
                     productList.RemoveAt(i);
                     wasDeleted = true;
