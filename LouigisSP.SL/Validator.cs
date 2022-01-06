@@ -8,7 +8,7 @@ using LouigisSP.BO;
 
 namespace LouigisSP.SL
 {
-   public  static class Validator
+    public static class Validator
     {
         public static bool ComparePass(string pass, Person person)
         {
@@ -34,13 +34,13 @@ namespace LouigisSP.SL
         //checks the name to have more than 3 letters
         public static bool CheckName(string name)
         {
-            bool isItCorrect;
-            if (name.Length <= 3)
-            {
-                isItCorrect = false;
+            bool blnCorrect;
+            
+            if (name.Length <= 3 || name is null) { 
+                blnCorrect = false;
             }
-            else isItCorrect = true;
-            return isItCorrect;
+            else blnCorrect = true;
+            return blnCorrect;
         }
 
         //checks the email to be well formated 
@@ -81,6 +81,41 @@ namespace LouigisSP.SL
             }
             else return false;
         }
+
+
+        //this method recieves an array with the values to be stored into the Products table, 
+        //only returns true if all the elements in the array are valid
+        public static bool CheckProductParameters(string[] values)
+        {
+            if (values is null || values.Length<7)
+            {
+                return false;
+            }
+            else {
+                float price;
+                int stock;
+                bool blnValid = true;
+                bool[] blnArray = new bool[values.Length];
+                blnArray[0] = CheckName(values[0]);
+                blnArray[1] = CheckName(values[1]);
+                blnArray[2] = CheckName(values[2]);
+                blnArray[3] = CheckName(values[3]);
+                blnArray[4] = float.TryParse(values[4], out price);
+                blnArray[5] = int.TryParse(values[5], out stock);
+                blnArray[6] = CheckName(values[6]);
+                foreach (var blnFlag in blnArray)
+                {
+                    if (!blnFlag)
+                    {
+                        blnValid = false;
+                        break;
+                    }
+                }
+                return blnValid;
+            }
+           
+        }
+
 
     }
 }

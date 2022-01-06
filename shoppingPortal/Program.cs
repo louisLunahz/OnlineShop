@@ -11,6 +11,7 @@ using LouigisSP.BO;
 using LouigisSP.SL;
 using LougisSP.BO;
 using System.Data;
+using LouigisSP.SL.Exceptions;
 
 namespace shoppingPortal
 {
@@ -68,15 +69,20 @@ namespace shoppingPortal
                     Console.ReadKey();
                     return true;
                 case "3":
-                    bool wasInserted = SignUP();
-                    if (wasInserted)
+                    try
                     {
+                        SignUP();
                         Console.WriteLine("Customer registered succesfully");
                     }
-                    else
+                    catch (NullParameterException nullParameterEx)
                     {
-                        Console.WriteLine("Error! Customer could not be registered or was already registered");
+                        Console.WriteLine("Email can´t be empty");
                     }
+                    catch (DatabaseInsertionException e) {
+                        Console.WriteLine("Error in the registration");
+                    }
+
+
                     Console.ReadKey();
                     return true;
 
@@ -84,7 +90,7 @@ namespace shoppingPortal
                     return false;
 
                 default:
-                   
+
                     return true;
 
             }
@@ -97,7 +103,7 @@ namespace shoppingPortal
         private static Person SignIn(Person person)
         {
 
-           
+
             Console.Clear();
             Console.WriteLine("Enter email");
             string email = Console.ReadLine();
@@ -106,12 +112,35 @@ namespace shoppingPortal
             Authenticator auth = new Authenticator();
             if (person is Customer)
             {
-                return auth.GetCustomer(Tuple.Create(email, pass));
+                try
+                {
+                    Customer cus = auth.GetCustomer(Tuple.Create(email, pass));
+                    return cus;
+                }
+                catch (InvalidCredentialsException e)
+                {
+                    return null;
+                }
 
             }
             else if (person is Employee)
             {
-                return auth.GetEmployee(Tuple.Create(email, pass));
+                try
+                {
+                    Employee obj_Employee = auth.GetEmployee(Tuple.Create(email, pass));
+                    return obj_Employee;
+                }
+                catch (InvalidCredentialsException invalidCredentialsException)
+                {
+
+                    return null;
+                }
+                catch (UserNotFoundException userNotFoundException)
+                {
+
+                    return null;
+                }
+
             }
             else return null;
 
@@ -119,20 +148,24 @@ namespace shoppingPortal
 
         }
 
-        private static bool SignUP()
+        private static void SignUP()
         {
-            bool wasInserted = false;
+
             Console.Clear();
             Console.WriteLine("Enter email");
             string email = Console.ReadLine();
 
             Authenticator obj_Authenticator = new Authenticator();
-            Person obj_person = obj_Authenticator.SearchCustomerExistence(email);
-            if (!(obj_person is null))//user is already registered
+            try
             {
-                wasInserted = false;
+                Person obj_person = obj_Authenticator.SearchCustomerExistence(email);
+
             }
-            else
+            catch (NullParameterException nullParameterEx)
+            {
+                throw nullParameterEx;
+            }
+            catch (UserNotFoundException userNotFoundException)
             {
                 string[] values = new string[8];
                 values[0] = email;
@@ -160,17 +193,15 @@ namespace shoppingPortal
                 values[5] = dob;
                 values[6] = shippingA;
                 values[7] = billingA;
-
-
-                wasInserted = obj_Authenticator.InsertCustomer(values);
-
-
-
-
+                try {
+                    obj_Authenticator.InsertCustomer(values);
+                }
+                catch (DatabaseInsertionException e) {
+                    throw e;
+                }
+                
 
             }
-
-            return wasInserted;
 
         }
 
@@ -253,17 +284,23 @@ namespace shoppingPortal
                             Console.WriteLine("Insert extra info if necessary");
                             values[6] = Console.ReadLine();
                             Authenticator obj_authenticator = new Authenticator();
-                            bool WasInserted = obj_authenticator.insertProduct(values);
-                            if (WasInserted)
+                            try
                             {
+                                obj_authenticator.insertProduct(values);
                                 Console.WriteLine("Product added succcesfully");
-
                             }
-                            else
+                            catch (NoValuesToInsertException noValuesToInsert)
                             {
-                                Console.WriteLine("Product could not be added ");
+                                Console.WriteLine("Product could not be added");
                             }
-                            Console.ReadKey();
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Product could not be added");
+                            }
+                            finally
+                            {
+                                Console.ReadKey();
+                            }
 
 
                             break;

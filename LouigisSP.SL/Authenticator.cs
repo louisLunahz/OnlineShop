@@ -1,5 +1,6 @@
 ﻿using LouigisSP.BO;
 using LouigisSP.DL;
+using LouigisSP.SL.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,24 +16,34 @@ namespace LouigisSP.SL
 
         public Customer GetCustomer(Tuple<string, string> customerCredentials) //Tuple<string email, string pass>
         {
-            Customer obj_customer = null;
-            IDbDataParameter[] parameters = GetParametersForPerson(customerCredentials);
-            DataTable dataTable = DBManager.GetDataTable("sp_retrieveCustomerByEmailAndPass", CommandType.StoredProcedure, parameters);
-            if (dataTable.Rows.Count >= 1)
-            {
-                Console.WriteLine("it was retrieved succesfully");
-                DataRow row = dataTable.Rows[0];
 
-                obj_customer = new Customer();
-                ProcssPersonInformation(row, (Person)obj_customer);
-                obj_customer.ShippingAddress = (string)row["shippingAddress"];
-                obj_customer.BillingAddress = (string)row["billingAddress"];
-            }
-            else
+            if (customerCredentials is null || customerCredentials.Item1.Length == 0 || customerCredentials.Item2.Length == 0)
             {
-                Console.WriteLine("Error retrieving the user");
+                throw new InvalidCredentialsException("given credential are null or empty");
             }
-            return obj_customer;
+            else{
+                Customer obj_customer = null;
+                IDbDataParameter[] parameters = GetParametersForPerson(customerCredentials);
+                DataTable dataTable = DBManager.GetDataTable("sp_retrieveCustomerByEmailAndPass", CommandType.StoredProcedure, parameters);
+                if (dataTable.Rows.Count >= 1)
+                {
+                    Console.WriteLine("it was retrieved succesfully");
+                    DataRow row = dataTable.Rows[0];
+
+                    obj_customer = new Customer();
+                    ProcssPersonInformation(row, (Person)obj_customer);
+                    obj_customer.ShippingAddress = (string)row["shippingAddress"];
+                    obj_customer.BillingAddress = (string)row["billingAddress"];
+                }
+                else
+                {
+                    throw new UserNotFoundException("User could not be retrieved");
+                }
+                return obj_customer;
+
+            }
+
+           
         }
 
         private IDbDataParameter[] GetParametersForPerson(Tuple<string, string> personCredentials) 
@@ -63,81 +74,107 @@ namespace LouigisSP.SL
 
         public Employee GetEmployee(Tuple<string, string> employeeCredentials)
         {
-            Employee obj_Employee = null;
-            IDbDataParameter[] parameters = GetParametersForPerson(employeeCredentials);
-            DataTable dataTable = DBManager.GetDataTable("sp_retrieveEmployeeByEmailAndPass", CommandType.StoredProcedure, parameters);
-            if (dataTable.Rows.Count >= 1)
+            if (employeeCredentials is null || employeeCredentials.Item1 is null || employeeCredentials.Item2 is null)
             {
-                Console.WriteLine("it was retrieved succesfully");
-                var rows = dataTable.Rows;
-                DataRow row = dataTable.Rows[0];
 
-                obj_Employee = new Employee();
-                ProcssPersonInformation(row, (Person)obj_Employee);
+                throw new InvalidCredentialsException("Credentials given are null or empty");
             }
-            else
-            {
-                Console.WriteLine("Error retrieving the user");
+            else {
+                Employee obj_Employee = null;
+                IDbDataParameter[] parameters = GetParametersForPerson(employeeCredentials);
+                DataTable dataTable = DBManager.GetDataTable("sp_retrieveEmployeeByEmailAndPass", CommandType.StoredProcedure, parameters);
+                if (dataTable.Rows.Count >= 1)
+                {
+                    Console.WriteLine("it was retrieved succesfully");
+                    var rows = dataTable.Rows;
+                    DataRow row = dataTable.Rows[0];
+
+                    obj_Employee = new Employee();
+                    ProcssPersonInformation(row, (Person)obj_Employee);
+                }
+                else
+                {
+                    throw new UserNotFoundException("User could not be retrieved");
+                }
+                return obj_Employee;
             }
-            return obj_Employee;
+            
         }
 
         public Customer SearchCustomerExistence(string email) {
+            if (email is null || email=="")
+            {
+                throw new NullParameterException("email can't be empty");
+            }
             IDbDataParameter[] parameters = new IDbDataParameter[1];
-            Customer obj_customer=null;
+            
             parameters[0] = DBManager.CreateParameter("@email", email, DbType.String);
            
             DataTable dataTable = DBManager.GetDataTable("sp_checkCustomerExistence", CommandType.StoredProcedure, parameters);
             if (dataTable.Rows.Count >= 1)
             {
+                
                 DataRow row = dataTable.Rows[0];
-                obj_customer = new Customer();
+                Customer obj_customer = new Customer();
                 ProcssPersonInformation(row, (Person)obj_customer);
                 obj_customer.ShippingAddress = (string)row["shippingAddress"];
                 obj_customer.BillingAddress = (string)row["billingAddress"];
+                return obj_customer;
+            }
+            else {
+                throw new UserNotFoundException("Customer could not be found");
             }
            
 
 
 
-            return obj_customer;
+            
         }
 
 
-        public bool insertProduct(string []values) {
-            bool wasInserted = false;
-            try {
-                if (values != null)
+        public void insertProduct(string []values) {
+            if (values is null)
+            {
+                throw new NoValuesToInsertException("No values to be inserted were found");
+            }
+            else {
+
+                if (Validator.CheckProductParameters(values))
                 {
-                    int lastid;
-                    IDbDataParameter[] parameters = new IDbDataParameter[values.Length];
-                    parameters[0] = DBManager.CreateParameter("@name", values[0], DbType.String);
-                    parameters[1] = DBManager.CreateParameter("@brand", values[1], DbType.String);
-                    parameters[2] = DBManager.CreateParameter("@model", values[2], DbType.String);
-                    parameters[3] = DBManager.CreateParameter("@color", values[3], DbType.String);
-                    parameters[4] = DBManager.CreateParameter("@price", values[4], DbType.Currency);
-                    parameters[5] = DBManager.CreateParameter("@stock", values[5], DbType.Int32);
-                    parameters[6] = DBManager.CreateParameter("@extraInfo", values[6], DbType.String);
-                    DBManager.Insert("spAddProductToProductsTable", commandType: CommandType.StoredProcedure, parameters, out lastid);
-                    Console.WriteLine("last id: " + lastid);
-                    wasInserted = true;
+                    try
+                    {
+
+                        int lastid;
+                        IDbDataParameter[] parameters = new IDbDataParameter[values.Length];
+                        parameters[0] = DBManager.CreateParameter("@name", values[0], DbType.String);
+                        parameters[1] = DBManager.CreateParameter("@brand", values[1], DbType.String);
+                        parameters[2] = DBManager.CreateParameter("@model", values[2], DbType.String);
+                        parameters[3] = DBManager.CreateParameter("@color", values[3], DbType.String);
+                        parameters[4] = DBManager.CreateParameter("@price", values[4], DbType.Currency);
+                        parameters[5] = DBManager.CreateParameter("@stock", values[5], DbType.Int32);
+                        parameters[6] = DBManager.CreateParameter("@extraInfo", values[6], DbType.String);
+                        DBManager.Insert("spAddProductToProductsTable", commandType: CommandType.StoredProcedure, parameters, out lastid);
+                        Console.WriteLine("last id: " + lastid);
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
 
                 }
+                else {
+                    throw new NoValuesToInsertException();
+                }
                
-
             }
-            catch (Exception e) {
-                Console.WriteLine("there was an error while trying toinsert the value to the database");
-            }
+         
            
-            return wasInserted; 
+           
         
         }
 
 
-        public bool InsertCustomer(string []values) {
-         
-            bool wasInserted = false;
+        public void InsertCustomer(string []values) {
             try {
                 if (values != null)
                 {
@@ -153,18 +190,13 @@ namespace LouigisSP.SL
                     parameters[7] = DBManager.CreateParameter("@shippingAddress", values[6], DbType.String);
                     parameters[8] = DBManager.CreateParameter("@billingAddress", values[7], DbType.String);
                     DBManager.Insert("sp_InsertCustomerToCustomersTable", commandType: CommandType.StoredProcedure, parameters);
-                    wasInserted = true;
-
                 }
                
-
             }
             catch (Exception e) {
-                Console.WriteLine("there was an error while trying toinsert the value to the database");
+                Console.WriteLine("Error while trying to insert to the database");
+                throw new DatabaseInsertionException();
             }
-           
-            return wasInserted; 
-        
         }
 
 
