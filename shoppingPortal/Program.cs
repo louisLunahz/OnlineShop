@@ -21,6 +21,8 @@ namespace shoppingPortal
         {
             bool showMenu = true;
 
+
+
             while (showMenu)
             {
                 showMenu = MainMenu();
@@ -78,7 +80,8 @@ namespace shoppingPortal
                     {
                         Console.WriteLine("Email can´t be empty");
                     }
-                    catch (DatabaseInsertionException e) {
+                    catch (DatabaseInsertionException e)
+                    {
                         Console.WriteLine("Error in the registration");
                     }
 
@@ -193,13 +196,15 @@ namespace shoppingPortal
                 values[5] = dob;
                 values[6] = shippingA;
                 values[7] = billingA;
-                try {
+                try
+                {
                     obj_Authenticator.InsertCustomer(values);
                 }
-                catch (DatabaseInsertionException e) {
+                catch (DatabaseInsertionException e)
+                {
                     throw e;
                 }
-                
+
 
             }
 
@@ -218,7 +223,7 @@ namespace shoppingPortal
                 //menu for customers
                 do
                 {
-                    Console.Clear();
+                    //Console.Clear();
                     Console.WriteLine("1.-Show all the products");
                     Console.WriteLine("2.-See cart");
                     Console.WriteLine("3.-show user information ");
@@ -332,37 +337,29 @@ namespace shoppingPortal
             }
         }
 
-        public static bool buy(ref ShoppingCart sp)
+        public static bool buy(ref ShoppingCart shoppingCart)
         {
-            QueryExecutor obj_QueryExecutor = new QueryExecutor();
-            List<Object> products = obj_QueryExecutor.retrieveTableFromDatabase(new Product().GetType(), "Products");
-            if (products != null)
-            {
-                List<Product> obj_listProducts = Utilities.ConvertList<List<Product>>(products, new Product().GetType());
-                ShowItems(obj_listProducts);
-                Console.WriteLine("To buy a product, insert the id ");
-                string id = Console.ReadLine();
-                Product p = Utilities.searchProductInList(obj_listProducts, id);
-                if (p != null)
+
+            Authenticator obj_authenticator = new Authenticator();
+           List<Product> listProducts= obj_authenticator.GetAllProducts();
+            ShowItems(listProducts);
+            Console.WriteLine("To buy a product, insert the id ");
+            string id = Console.ReadLine();
+            Console.WriteLine("Insert the quantity");
+            string quantity=Console.ReadLine();
+            try {
+                Product obj_product = obj_authenticator.GetProduct(int.Parse(id));
+                bool blnStockEnough = Utilities.CheckQuantity(obj_product, int.Parse(quantity));
+                if (blnStockEnough)
                 {
-                    Console.Clear();
-                    Console.WriteLine(p.ToString());
-                    Console.WriteLine("Insert the quantity");
-                    int quantity = int.Parse(Console.ReadLine());
-                    bool isStockEnough = Utilities.CheckQuantity(p, quantity);
-                    if (isStockEnough)
-                    {
-                        sp.ProductList.Add(Tuple.Create(p, quantity));
-                        Console.Clear();
-                        Console.WriteLine("Product added successfully to the cart");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Not enough stock");
-                    }
-
+                    shoppingCart.ProductList.Add(Tuple.Create(obj_product, int.Parse(quantity)));
                 }
-
+                else {
+                    Console.Write("Not enough stock to fullfill the order");
+                }
+            }
+            catch (ProductNotFoundException e) {
+                Console.WriteLine("Could not found that product, make sure to write the id correctly");
             }
 
             return true;

@@ -46,6 +46,7 @@
     <Compile Include="Exceptions\InvalidCredentialsException.cs" />
     <Compile Include="Exceptions\NoValuesToInsertException.cs" />
     <Compile Include="Exceptions\NullParameterException.cs" />
+    <Compile Include="Exceptions\ProductNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShoppingCartOperations.cs" />
     <Compile Include="Exceptions\UserNotFoundException.cs" />

@@ -163,7 +163,7 @@ namespace LouigisSP.SL
 
                 }
                 else {
-                    throw new NoValuesToInsertException();
+                    throw new NoValuesToInsertException();//change
                 }
                
             }
@@ -200,7 +200,44 @@ namespace LouigisSP.SL
         }
 
 
+        public List<Product> GetAllProducts() {
+            List<Product> listProducts = new List<Product>();
+            DataTable dataTable = DBManager.GetDataTable("select * from products", commandType:CommandType.Text);
 
+            if (dataTable.Rows.Count >= 1)
+            {
+                foreach (DataRow row in dataTable.Rows) {
+
+                    Product obj_product = new Product();
+                    obj_product.Id = (int)row["id"];
+                    obj_product.Name = (string)row["name"];
+                    obj_product.Brand = (string)row["brand"];
+                    obj_product.Model = (string)row["model"];
+                    obj_product.Color = (string)row["color"];
+                    obj_product.Price =  (float)(decimal)row["price"];
+                    obj_product.Stock = (int)row["stock"];
+                    obj_product.Description = (string)row["extrainfo"];
+                    listProducts.Add(obj_product);
+                }
+            }
+            else
+            {
+                throw new ProductNotFoundException("Products could not be retrieved");
+            }
+            return listProducts;
+        }
+
+        public Product GetProduct(int id) 
+        {
+           List<Product> listProducts=GetAllProducts();
+           Product product= listProducts.Where(p => p.Id == id).FirstOrDefault();
+            if (product is null)
+            {
+                throw new ProductNotFoundException();
+            }
+            else return product;
+
+        }
 
 
     }
