@@ -198,7 +198,7 @@ namespace LouigisSP.BO
             Type type1 = GetType();
              var declaredProperties = type1.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
              var inheritedProps = type1.BaseType.GetProperties();
-            PropertyInfo[] properties = inheritedProps.Concat(declaredProperties).ToArray();
+            PropertyInfo[] properties = inheritedProps.Concat(declaredProperties).ToArray();//all the properties
 
           
             

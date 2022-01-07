@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using LouigisSP.DL;
 using LouigisSP.BO;
 using LouigisSP.SL;
-using LougisSP.BO;
 using System.Data;
 using LouigisSP.SL.Exceptions;
 
@@ -20,11 +19,15 @@ namespace shoppingPortal
         static void Main(string[] args)
         {
             bool showMenu = true;
+           
+
+
 
             while (showMenu)
             {
                 showMenu = MainMenu();
             }
+
 
         }
 
@@ -74,12 +77,13 @@ namespace shoppingPortal
                         SignUP();
                         Console.WriteLine("Customer registered succesfully");
                     }
-                    catch (NullParameterException nullParameterEx)
+                    catch (InvalidCredentialsException invalid)
                     {
-                        Console.WriteLine("Email can´t be empty");
+                        Console.WriteLine("Invalid Credentials");
                     }
-                    catch (DatabaseInsertionException e) {
-                        Console.WriteLine("Error in the registration");
+                    catch (UserNotFoundException e)
+                    {
+                        Console.WriteLine("User not found");
                     }
 
 
@@ -119,6 +123,9 @@ namespace shoppingPortal
                 }
                 catch (InvalidCredentialsException e)
                 {
+                    return null;
+                }
+                catch (UserNotFoundException e) {
                     return null;
                 }
 
@@ -161,9 +168,9 @@ namespace shoppingPortal
                 Person obj_person = obj_Authenticator.SearchCustomerExistence(email);
 
             }
-            catch (NullParameterException nullParameterEx)
+            catch (InvalidCredentialsException invalidCredentials)
             {
-                throw nullParameterEx;
+                throw invalidCredentials;
             }
             catch (UserNotFoundException userNotFoundException)
             {
@@ -185,21 +192,15 @@ namespace shoppingPortal
                 string shippingA = Console.ReadLine();
                 Console.WriteLine("Enter your billing Address");
                 string billingA = Console.ReadLine();
-                values[0] = fName;
-                values[1] = lastName;
-                values[2] = phone;
-                values[3] = email;
-                values[4] = pass;
-                values[5] = dob;
-                values[6] = shippingA;
-                values[7] = billingA;
+                int id;
                 try {
-                    obj_Authenticator.InsertCustomer(values);
+                     id = obj_Authenticator.GetLasCustomerId() + 1;
+                    Customer customer = new Customer(id, fName, lastName, phone, email, pass, DateTime.Now.Date, DateTime.Parse(dob), shippingA, billingA);
+                    obj_Authenticator.InsertCustomer(customer);
+                    obj_Authenticator.SaveAll();
                 }
-                catch (DatabaseInsertionException e) {
-                    throw e;
+                catch (IDNotFoundException e) { 
                 }
-                
 
             }
 
@@ -268,32 +269,39 @@ namespace shoppingPortal
                     switch (option = Console.ReadLine())
                     {
                         case "1":
-                            string[] values = new string[7];
+                            
                             Console.WriteLine("insert the name for the new product");
-                            values[0] = Console.ReadLine();
+                            string name = Console.ReadLine();
                             Console.WriteLine("Insert the brand");
-                            values[1] = Console.ReadLine();
+                           string brand= Console.ReadLine();
                             Console.WriteLine("Insert the model");
-                            values[2] = Console.ReadLine();
+                            string model = Console.ReadLine();
                             Console.WriteLine("Insert the color");
-                            values[3] = Console.ReadLine();
+                           string color = Console.ReadLine();
                             Console.WriteLine("Insert the price");
-                            values[4] = Console.ReadLine();
+                            string price = Console.ReadLine();
                             Console.WriteLine("Insert the existing stock");
-                            values[5] = Console.ReadLine();
+                            string stock = Console.ReadLine();
                             Console.WriteLine("Insert extra info if necessary");
-                            values[6] = Console.ReadLine();
+                            string extrainfo = Console.ReadLine();
+                           
+                            
                             Authenticator obj_authenticator = new Authenticator();
-                            try
-                            {
-                                obj_authenticator.insertProduct(values);
+                            try {
+                                int id = obj_authenticator.GetLastProductId() + 1;
+                                Product obj_product = new Product(id, name, brand, model, color, float.Parse(price), int.Parse(stock), extrainfo);
+                                obj_authenticator.InserProduct(obj_product);
+                                obj_authenticator.SaveAll();
                                 Console.WriteLine("Product added succcesfully");
+                            }
+                            catch (IDNotFoundException e) { 
+                            
                             }
                             catch (NoValuesToInsertException noValuesToInsert)
                             {
                                 Console.WriteLine("Product could not be added");
                             }
-                            catch (Exception e)
+                            catch (ProductNotFoundException e)
                             {
                                 Console.WriteLine("Product could not be added");
                             }
@@ -334,15 +342,16 @@ namespace shoppingPortal
 
         public static bool buy(ref ShoppingCart sp)
         {
-            QueryExecutor obj_QueryExecutor = new QueryExecutor();
-            List<Object> products = obj_QueryExecutor.retrieveTableFromDatabase(new Product().GetType(), "Products");
-            if (products != null)
+            //show products and let the user insert the id of a product to buy it 
+            Authenticator obj_authenticator = new Authenticator();
+            List<Product> listProducts =obj_authenticator.GetAllProducts();
+           
+            if (listProducts != null)
             {
-                List<Product> obj_listProducts = Utilities.ConvertList<List<Product>>(products, new Product().GetType());
-                ShowItems(obj_listProducts);
+                ShowItems(listProducts);
                 Console.WriteLine("To buy a product, insert the id ");
                 string id = Console.ReadLine();
-                Product p = Utilities.searchProductInList(obj_listProducts, id);
+                Product p = Utilities.searchProductInList( listProducts,id);
                 if (p != null)
                 {
                     Console.Clear();
@@ -399,7 +408,7 @@ namespace shoppingPortal
                         if (obj_shoppingCart.ProductList.Count >= 1)
                         {
 
-                            ShoppingCartOperations obj_shoppingCartOperations = new ShoppingCartOperations();
+                            Authenticator obj_Authenticator = new Authenticator();
                             if (MakePayment(obj_shoppingCart))
                             {
                                 int idCustomer = obj_shoppingCart.Cus.Id;
@@ -410,17 +419,28 @@ namespace shoppingPortal
                                 }
                                 Console.WriteLine("Payment done");
                                 //after the payment is aproved, The order is stored and the products are added to the sells table
+                                try {
+                                    bool wasSettled = obj_Authenticator.setOrder(idCustomer, products);
+                                    obj_Authenticator.SaveAll();
+                                    if (wasSettled)
+                                    {
+                                        obj_shoppingCart.ProductList.Clear();
 
-                                bool wasSettled = obj_shoppingCartOperations.setOrder(idCustomer, products);
-                                if (wasSettled)
-                                {
-                                    obj_shoppingCart.ProductList.Clear();
-                                    Console.WriteLine("Order was settled and will be send between 2 days");
+                                        Console.WriteLine("Order was settled and will be send between 2 days");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Error seting the order, the payment will be return as soon as possible");
+                                    }
                                 }
-                                else
-                                {
-                                    Console.WriteLine("Error seting the order, the payment will be return as soon as possible");
+                                catch (DatabaseInsertionException e) {
+                                    Console.WriteLine("error inserting in the database");
                                 }
+                                catch (InvalidIDException e) {
+                                    Console.WriteLine("Invalid Id");
+                                }
+                                
+                               
                             }
                             else
                             {

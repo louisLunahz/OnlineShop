@@ -45,14 +45,7 @@
   <ItemGroup>
     <Compile Include="CSV\CsvReader.cs" />
     <Compile Include="CSV\CsvWriter.cs" />
-    <Compile Include="GenericDataLayer\DatabaseHandlerFactory.cs" />
-    <Compile Include="GenericDataLayer\DataParameterManager.cs" />
-    <Compile Include="GenericDataLayer\DBManager.cs" />
-    <Compile Include="GenericDataLayer\IDatabaseHandler.cs" />
-    <Compile Include="GenericDataLayer\OdbcDataAccess.cs" />
-    <Compile Include="GenericDataLayer\SqlDataAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryExecutor\QueryExecutor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LouigisSP.BO\LouigisSP.BO.csproj">

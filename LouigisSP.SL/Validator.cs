@@ -46,6 +46,9 @@ namespace LouigisSP.SL
         //checks the email to be well formated 
         public static bool CheckEmail(string email)
         {
+            if (email is null || email=="") {
+                throw new Exception();
+            }
             bool isEmailCorrect;
             isEmailCorrect = Regex.IsMatch(email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
             return isEmailCorrect;

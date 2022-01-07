@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LouigisSP.BO;
 
-namespace LougisSP.BO
+namespace LouigisSP.BO
 {
     public class ShoppingCart
     {

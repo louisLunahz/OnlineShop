@@ -33,3 +33,17 @@ C:\Users\jose.hernandez\source\repos\OnlineShop\shoppingPortal\obj\Debug\shoppin
 C:\Users\jose.hernandez\source\repos\OnlineShop\shoppingPortal\obj\Debug\shoppingPortal.csproj.CopyComplete
 C:\Users\jose.hernandez\source\repos\OnlineShop\shoppingPortal\obj\Debug\shoppingPortal.exe
 C:\Users\jose.hernandez\source\repos\OnlineShop\shoppingPortal\obj\Debug\shoppingPortal.pdb
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\shoppingPortal.exe.config
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\shoppingPortal.exe
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\shoppingPortal.pdb
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\LougisSP.BO.dll
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\LouigisSP.DLNew.dll
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\LouigisSP.SL.dll
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\LougisSP.BO.pdb
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\LouigisSP.DLNew.pdb
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\bin\Debug\LouigisSP.SL.pdb
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\obj\Debug\shoppingPortal.csproj.AssemblyReference.cache
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\obj\Debug\shoppingPortal.csproj.CoreCompileInputs.cache
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\obj\Debug\shoppingPortal.csproj.CopyComplete
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\obj\Debug\shoppingPortal.exe
+C:\Users\jose.hernandez\source\repos\OnlineShopUsingFiles\OnlineShop\shoppingPortal\obj\Debug\shoppingPortal.pdb

@@ -12,196 +12,326 @@ namespace LouigisSP.SL
 {
     public class Authenticator
     {
-
-
-        public Customer GetCustomer(Tuple<string, string> customerCredentials) //Tuple<string email, string pass>
+        private List<Product> listProducts;
+        private List<Customer> listCustomers;
+        private List<Employee> listEmployees;
+        private List<Order> listOrders;
+        private List<Sell> listSells;
+        public Authenticator()
         {
+            listProducts = getAllProducts();
+            listCustomers = GetAllCustomers();
+            listEmployees = GetAllEmployees();
+            listOrders = GetAllOrders();
+            listSells = GetAllSells();
+        }
+        public void SaveAll()
+        {
+            var customersWriter = new CsvWriter<Customer>();
+            customersWriter.Write(listCustomers, "customers.csv");
+            var employeesWritter = new CsvWriter<Employee>();
+            employeesWritter.Write(listEmployees, "employees.csv");
+            var ProductsWriter = new CsvWriter<Product>();
+            ProductsWriter.Write(listProducts, "products.csv");
 
+            var ordersWriter = new CsvWriter<Order>();
+            ordersWriter.Write(listOrders, "orders.csv");
+            var sellsWriter = new CsvWriter<Sell>();
+            sellsWriter.Write(listSells, "sells.csv");
+
+
+
+        }
+        private List<Product> getAllProducts()
+        {
+            List<Product> products;
+            var csvReader = new CsvReader<Product>();
+            products = csvReader.Read("products.csv", false).ToList();
+            return products;
+        }
+        public List<Product> GetAllProducts() {
+            return listProducts;
+        }
+
+        private List<Customer> GetAllCustomers()
+        {
+            List<Customer> customers;
+            var csvReader = new CsvReader<Customer>();
+            customers = csvReader.Read("customers.csv", false).ToList();
+            return customers;
+        }
+
+        private List<Employee> GetAllEmployees()
+        {
+            List<Employee> employees;
+            var csvReader = new CsvReader<Employee>();
+            employees = csvReader.Read("employees.csv", false).ToList();
+            return employees;
+        }
+
+        private List<Order> GetAllOrders() {
+            List<Order> orders;
+            var csvReader = new CsvReader<Order>();
+            orders = csvReader.Read("orders.csv", false).ToList();
+            return orders;
+        }
+
+        private List<Sell> GetAllSells()
+        {
+            List<Sell> sells;
+            var csvReader = new CsvReader<Sell>();
+            sells = csvReader.Read("sells.csv", false).ToList();
+            return sells;
+        }
+
+
+
+
+
+
+        public Customer GetCustomer(Tuple<string, string> customerCredentials)
+        {
             if (customerCredentials is null || customerCredentials.Item1.Length == 0 || customerCredentials.Item2.Length == 0)
             {
                 throw new InvalidCredentialsException("given credential are null or empty");
             }
-            else{
-                Customer obj_customer = null;
-                IDbDataParameter[] parameters = GetParametersForPerson(customerCredentials);
-                DataTable dataTable = DBManager.GetDataTable("sp_retrieveCustomerByEmailAndPass", CommandType.StoredProcedure, parameters);
-                if (dataTable.Rows.Count >= 1)
-                {
-                    Console.WriteLine("it was retrieved succesfully");
-                    DataRow row = dataTable.Rows[0];
 
-                    obj_customer = new Customer();
-                    ProcssPersonInformation(row, (Person)obj_customer);
-                    obj_customer.ShippingAddress = (string)row["shippingAddress"];
-                    obj_customer.BillingAddress = (string)row["billingAddress"];
-                }
-                else
-                {
-                    throw new UserNotFoundException("User could not be retrieved");
-                }
+            Customer obj_customer = null;
+            obj_customer = listCustomers.Where(x => x.Email == customerCredentials.Item1 && x.Pass == customerCredentials.Item2).FirstOrDefault();
+
+            if (obj_customer != null)
+            {
+
                 return obj_customer;
-
             }
-
-           
-        }
-
-        private IDbDataParameter[] GetParametersForPerson(Tuple<string, string> personCredentials) 
-        {
-            var emailP = DBManager.CreateParameter("@email", personCredentials.Item1, DbType.String);
-            var passP = DBManager.CreateParameter("@pass", personCredentials.Item2, DbType.String);
-            IDbDataParameter[] parameters = new IDbDataParameter[2];
-            parameters[0] = emailP;
-            parameters[1] = passP;
-
-            return parameters;
-        }
-
-        private void  ProcssPersonInformation(DataRow row,  Person person)
-        {
-            
-            person.Id = (int)row["id"];
-            person.FirstName = (string)row["firstName"];
-            person.LastName = (string)row["lastName"];
-            person.PhoneNumber = (string)row["phoneNumber"];
-            person.Email = (string)row["email"];
-            person.Pass = (string)row["pass"];
-            person.DateOfRegistration = (DateTime)row["dateOfRegistration"];
-            person.DateOfBirth = (DateTime)row["dateOfBirth"];
-
+            else
+            {
+                throw new UserNotFoundException("User could not be retrieved");
+            }
 
         }
 
         public Employee GetEmployee(Tuple<string, string> employeeCredentials)
         {
-            if (employeeCredentials is null || employeeCredentials.Item1 is null || employeeCredentials.Item2 is null)
+            if (employeeCredentials is null || employeeCredentials.Item1.Length == 0 || employeeCredentials.Item2.Length == 0)
+            {
+                throw new InvalidCredentialsException("given credential are null or empty");
+            }
+
+            Employee obj_Employee = null;
+            obj_Employee = listEmployees.Where(x => x.Email == employeeCredentials.Item1 && x.Pass == employeeCredentials.Item2).FirstOrDefault();
+
+            if (obj_Employee != null)
             {
 
-                throw new InvalidCredentialsException("Credentials given are null or empty");
-            }
-            else {
-                Employee obj_Employee = null;
-                IDbDataParameter[] parameters = GetParametersForPerson(employeeCredentials);
-                DataTable dataTable = DBManager.GetDataTable("sp_retrieveEmployeeByEmailAndPass", CommandType.StoredProcedure, parameters);
-                if (dataTable.Rows.Count >= 1)
-                {
-                    Console.WriteLine("it was retrieved succesfully");
-                    var rows = dataTable.Rows;
-                    DataRow row = dataTable.Rows[0];
-
-                    obj_Employee = new Employee();
-                    ProcssPersonInformation(row, (Person)obj_Employee);
-                }
-                else
-                {
-                    throw new UserNotFoundException("User could not be retrieved");
-                }
                 return obj_Employee;
             }
-            
+            else
+            {
+                throw new UserNotFoundException("User could not be retrieved");
+            }
+
         }
 
-        public Customer SearchCustomerExistence(string email) {
-            if (email is null || email=="")
+        public Product GetProduct(int id)
+        {
+            if (id <= 0)
             {
-                throw new NullParameterException("email can't be empty");
+                throw new InvalidIDException("Invalid Id");
             }
-            IDbDataParameter[] parameters = new IDbDataParameter[1];
-            
-            parameters[0] = DBManager.CreateParameter("@email", email, DbType.String);
-           
-            DataTable dataTable = DBManager.GetDataTable("sp_checkCustomerExistence", CommandType.StoredProcedure, parameters);
-            if (dataTable.Rows.Count >= 1)
+
+            Product obj_product = null;
+            obj_product = listProducts.Where(x => x.Id == id).FirstOrDefault();
+
+            if (obj_product != null)
             {
-                
-                DataRow row = dataTable.Rows[0];
-                Customer obj_customer = new Customer();
-                ProcssPersonInformation(row, (Person)obj_customer);
-                obj_customer.ShippingAddress = (string)row["shippingAddress"];
-                obj_customer.BillingAddress = (string)row["billingAddress"];
-                return obj_customer;
+
+                return obj_product;
             }
-            else {
-                throw new UserNotFoundException("Customer could not be found");
+            else
+            {
+                throw new ProductNotFoundException("Product could not be retrieved");
             }
-           
-
-
-
-            
         }
 
-
-        public void insertProduct(string []values) {
-            if (values is null)
+        public Customer SearchCustomerExistence(string email)
+        {
             {
-                throw new NoValuesToInsertException("No values to be inserted were found");
-            }
-            else {
-
-                if (Validator.CheckProductParameters(values))
+                try
                 {
-                    try
-                    {
-
-                        int lastid;
-                        IDbDataParameter[] parameters = new IDbDataParameter[values.Length];
-                        parameters[0] = DBManager.CreateParameter("@name", values[0], DbType.String);
-                        parameters[1] = DBManager.CreateParameter("@brand", values[1], DbType.String);
-                        parameters[2] = DBManager.CreateParameter("@model", values[2], DbType.String);
-                        parameters[3] = DBManager.CreateParameter("@color", values[3], DbType.String);
-                        parameters[4] = DBManager.CreateParameter("@price", values[4], DbType.Currency);
-                        parameters[5] = DBManager.CreateParameter("@stock", values[5], DbType.Int32);
-                        parameters[6] = DBManager.CreateParameter("@extraInfo", values[6], DbType.String);
-                        DBManager.Insert("spAddProductToProductsTable", commandType: CommandType.StoredProcedure, parameters, out lastid);
-                        Console.WriteLine("last id: " + lastid);
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
-
+                    Validator.CheckEmail(email);
                 }
-                else {
-                    throw new NoValuesToInsertException();
+                catch (Exception e)
+                {
+                    throw new InvalidCredentialsException("email bad formated");
+                }
+                Customer obj_customer = null;
+                obj_customer = listCustomers.Where(x => x.Email == email).FirstOrDefault();
+                if (obj_customer != null)
+                {
+                    return obj_customer;
+                }
+                else throw new UserNotFoundException("Customer not found");
+
+            }
+            
+
+
+
+
+
+
+        }
+
+        public void InserProduct(Product obj_product)
+        {
+            if (obj_product is null)
+            {
+                throw new ProductNotFoundException("No product was given to insert");
+            }
+            listProducts.Add(obj_product);
+        }
+
+
+        public void InsertCustomer(Customer obj_Customer)
+        {
+            if (obj_Customer is null)
+            {
+                throw new UserNotFoundException("No user was given to insert");
+            }
+            listCustomers.Add(obj_Customer);
+        }
+        public void InsertEmployee(Employee obj_employee)
+        {
+            if (obj_employee is null)
+            {
+                throw new UserNotFoundException("No employee was given to insert");
+            }
+            listEmployees.Add(obj_employee);
+        }
+
+        public int GetLasCustomerId() {
+            int id;
+            Customer cus= listCustomers.OrderByDescending(c => c.Id).FirstOrDefault();
+            if (cus != null)
+            {
+                id = cus.Id;
+                return id;
+            }
+            else {
+                throw new IDNotFoundException("Could not found the last Id");
+            }
+            
+        }
+
+
+        public int GetLastProductId()
+        {
+            int id;
+            Product product = listProducts.OrderByDescending(c => c.Id).FirstOrDefault();
+            if (product != null)
+            {
+                id = product.Id;
+                return id;
+            }
+            else
+            {
+                throw new IDNotFoundException("Could not found the last Id");
+            }
+
+        }
+
+        public int GetLastOrderId()
+        {
+            int id;
+            Order order = listOrders.OrderByDescending(c => c.Id).FirstOrDefault();
+            if (order != null)
+            {
+                id = order.Id;
+                return id;
+            }
+            else
+            {
+                throw new InvalidIDException("Could not found the last Id");
+            }
+
+        }
+
+        public bool setOrder(int idCustomer, List<Tuple<int, int>> products)
+        {
+            bool orderSet = false;
+            if (products != null)
+            {
+                //get last order id
+                try {
+                    int lastOrder = GetLastOrderId();
+
+                    bool orderInserted = InsertOrder(idCustomer);
+                    bool sellInserted = InsertSell(products, lastOrder);
+                    if (orderInserted && sellInserted)
+                    {
+                        orderSet = true;
+                    }
+                }
+                catch (InvalidIDException e) {
+                    throw e;
+                }
+                catch (DatabaseInsertionException e) {
+                    throw e;
                 }
                
+              
+
+
             }
-         
-           
-           
-        
+            return orderSet;
+
         }
 
-
-        public void InsertCustomer(string []values) {
+        private bool InsertOrder(int idCustomer)
+        {
+            
+            if (idCustomer<=0)
+            {
+                throw new Exception();
+            }
             try {
-                if (values != null)
-                {
-                    
-                    IDbDataParameter[] parameters = new IDbDataParameter[9];
-                    parameters[0] = DBManager.CreateParameter("@firstName", values[0], DbType.String);
-                    parameters[1] = DBManager.CreateParameter("@lastName", values[1], DbType.String);
-                    parameters[2] = DBManager.CreateParameter("@phoneNumber", values[2], DbType.String);
-                    parameters[3] = DBManager.CreateParameter("@email", values[3], DbType.String);
-                    parameters[4] = DBManager.CreateParameter("@pass", values[4], DbType.String);
-                    parameters[5] = DBManager.CreateParameter("@dateOfRegistration",DateTime.Now, DbType.DateTime);
-                    parameters[6] = DBManager.CreateParameter("@dateOfBirth", values[5], DbType.DateTime);
-                    parameters[7] = DBManager.CreateParameter("@shippingAddress", values[6], DbType.String);
-                    parameters[8] = DBManager.CreateParameter("@billingAddress", values[7], DbType.String);
-                    DBManager.Insert("sp_InsertCustomerToCustomersTable", commandType: CommandType.StoredProcedure, parameters);
-                }
-               
+                int id = GetLastOrderId() + 1;
+                Order order = new Order(id, idCustomer, DateTime.Now.Date, "Waiting for delivery");
+                listOrders.Add(order);
+                return true;
             }
-            catch (Exception e) {
-                Console.WriteLine("Error while trying to insert to the database");
-                throw new DatabaseInsertionException();
+            catch (InvalidIDException e) {
+                throw e;
             }
+           
+
         }
 
+        private bool InsertSell(List<Tuple<int, int>> products, int lastOrder)
+        {
+               
+            if (products is null || lastOrder<=0) {
+                throw new DatabaseInsertionException("could not enter the row into the database");
+            }
+            //tuple <idProduct, quantity>
+            bool wasInserted = false;
+            for (int i = 0; i < products.Count; i++)
+            {
+
+                Sell sell = new Sell();
+                sell.idProduct = products.ElementAt(i).Item1;
+                sell.idOrder = lastOrder + 1;
+                sell.quantity = products.ElementAt(i).Item2;
+                listSells.Add(sell);
 
 
+                wasInserted = true;
+            }
 
+            return wasInserted;
+
+        }
 
     }
 }
